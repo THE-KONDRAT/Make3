@@ -13,7 +13,7 @@ namespace Layers
         XmlInclude(typeof(TrekoCylinder)),
         XmlInclude(typeof(TrekoSwitch)),
     XmlType]
-    //fd
+
     //[KnownType("GetTypes")]
 
     public class Layer : IRenderableLayer, INotifyPropertyChanged

@@ -41,21 +41,9 @@ namespace ViewModels
         /// <returns></returns>
         internal static string GetLayerNameFromControlContextMenu(object inputobject)
         {
-            string name = null;
-            if (inputobject.GetType() == typeof(MenuItem))
-            {
-                MenuItem mi = (MenuItem)inputobject;
-                if (mi.Parent.GetType() == typeof(ContextMenu))
-                {
-                    ContextMenu cm = (ContextMenu)mi.Parent;
-                    name = GetLayerNameFromControl(cm.PlacementTarget);
-                    /*if (cm.PlacementTarget.GetType().GetProperty("Name") != null)
-                    {
-                        var obj = cm.PlacementTarget;
-                        name = GetLayerNameFromElement((string)obj.GetType().GetProperty("Name").GetValue(obj));
-                    }*/
-                }
-            }
+            string name = UI_Helper.UI_Helper.GetControlNameFromContextMenu(inputobject);
+            //now get layername
+            name = GetLayerNameFromElement(name);
             return name;
         }
 
@@ -69,7 +57,7 @@ namespace ViewModels
             string name = null;
             if (inputobject.GetType().GetProperty("Name") != null)
             {
-                name = GetLayerNameFromElement((string)inputobject.GetType().GetProperty("Name").GetValue(inputobject));
+                name = GetLayerNameFromElement(UI_Helper.UI_Helper.GetControlName(inputobject));
             }
             return name;
         }
