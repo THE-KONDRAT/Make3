@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="ControlLibrary.Control_Parts.DimensionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlLibrary.Control_Parts"
+             xmlns:validR="clr-namespace:ControlLibrary.ValidationRules"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:DimensionControl}"
+             d:DesignHeight="100" d:DesignWidth="200"
+             x:Name="this">
+    <Grid Width="Auto" Height="Auto">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <local:NumericUpDownControl Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                    TextBorderBrush="{Binding ElementName=this, Path=ValBorderColor, Mode=OneWay}"
+                                    ReadOnly="{Binding ElementName=this, Path=ValReadOnly, Mode=OneTime}"
+                                    TextFontSize="{Binding ElementName=this, Path=ValFontSize, Mode=OneWay}"
+                                    TextBackgroundBrush="{Binding ElementName=this, Path=ValColor, Mode=OneWay}"
+                                    TextForegroundBrush="{Binding ElementName=this, Path=ValBackColor, Mode=OneWay}"
+                                    Value="{Binding ElementName=this, Path=Val, Mode=TwoWay}"
+                                    MinValue="{Binding ElementName=this, Path=MinValue, Mode=OneWay}"
+                                    MaxValue="{Binding ElementName=this, Path=MaxValue, Mode=OneWay}"
+                                    Step="{Binding ElementName=this, Path=Step, Mode=OneWay}"
+                                    NumberType="{Binding ElementName=this, Path=NumberType, Mode=OneWay}">
+            <!--<local:NumericUpDownControl.Text>
+                <Binding ElementName="this" Path="Val" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validR:NumberIntRule x:Name="ValRule"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </local:NumericUpDownControl.Text>-->
+        </local:NumericUpDownControl>
+
+        <!--<TextBox x:Name="txtVal" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                 TextWrapping="Wrap" Height="Auto" Width="Auto" MinHeight="10" MinWidth="20"
+                 BorderBrush="{Binding ElementName=this, Path=ValBorderColor, Mode=OneWay}"
+                 IsReadOnly="{Binding ElementName=this, Path=ValReadOnly, Mode=OneTime}"
+                 FontSize="{Binding ElementName=this, Path=ValFontSize, Mode=OneWay}"
+                 Foreground= "{Binding ElementName=this, Path=ValColor, Mode=OneWay}"
+                 Background="{Binding ElementName=this, Path=ValBackColor, Mode=OneWay}">
+            <TextBox.Text>
+                <Binding ElementName="this" Path="Val" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validR:NumberIntRule x:Name="ValRule"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>-->
+
+        <Label x:Name="lblPropName" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+               VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Height="Auto" Width="Auto" MinHeight="10" MinWidth="20"
+               Content="{Binding ElementName=this, Path=PropertyName, Mode=TwoWay}" 
+               FontSize="{Binding ElementName=this, Path=PropertyNameFontSize, Mode=OneWay}"
+               Foreground= "{Binding ElementName=this, Path=PropertyNameColor, Mode=OneWay}" Background="Transparent"/>
+
+        <Label x:Name="lblPropUnit" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+               VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Height="Auto" Width="Auto" MinHeight="10" MinWidth="20"
+               Content="{Binding ElementName=this, Path=PropertyUnit, Mode=TwoWay}" 
+               FontSize="{Binding ElementName=this, Path=PropertyUnitFontSize, Mode=OneWay}"
+               Foreground= "{Binding ElementName=this, Path=PropertyUnitColor, Mode=OneWay}" Background="Transparent"/>
+        
+
+        <!--<Border Grid.Row="0" Grid.Column="0" 
+                        BorderThickness="1" BorderBrush="Gray"
+                        VerticalAlignment="Stretch" 
+                        Margin="10">
+            
+        </Border>-->
+    </Grid>
+</UserControl>

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControlLibrary\ControlLibrary.csproj" />
+    <ProjectReference Include="..\DataContainers\DataContainers.csproj" />
+    <ProjectReference Include="..\FileOperations\FileOperations.csproj" />
+    <ProjectReference Include="..\ProjectClassLib\ProjectClassLib.csproj" />
+    <ProjectReference Include="..\UI_Helper\UI_Helper.csproj" />
+  </ItemGroup>
+
+</Project>

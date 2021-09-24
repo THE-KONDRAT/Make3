@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="ControlLibrary.ProjectControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlLibrary"
+             xmlns:controlParts ="clr-namespace:ControlLibrary.Control_Parts"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.1*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <controlParts:WrapProperty x:Name="ctlName" Width="Auto" Height="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" PropertyName="ProjectName">
+                <!--<controlParts:WrapProperty Properties=/>-->
+            </controlParts:WrapProperty>
+            <!--<Label Grid.Column="0" Grid.Row="0" Content="Project name" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            <TextBlock x:Name="txtProjectName" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                       TextAlignment="Left" TextWrapping="Wrap"
+                       FontSize="10" Foreground="White"
+                       Text="ababa"/>
+
+            <Separator Grid.ColumnSpan="2" Grid.Row="1"/>
+
+            <Label Grid.Column="0" Grid.Row="2" Content="Project path" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            <TextBlock x:Name="txtProjectPath" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                       TextAlignment="Left" TextWrapping="Wrap"
+                       FontSize="10" Foreground="White"
+                       Text="abaasdqw3123ba"/>-->
+        </Grid>
+        
+    </Grid>
+</UserControl>

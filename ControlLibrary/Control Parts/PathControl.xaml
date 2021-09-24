@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="ControlLibrary.Control_Parts.PathControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlLibrary.Control_Parts"
+             mc:Ignorable="d" 
+             d:DesignHeight="60" d:DesignWidth="240"
+             Name="this">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width=".1*"/>
+            <ColumnDefinition Width=".3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <!--<validR:BindingProxy n="{Binding MyLength, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Out="{Binding ElementName=strLengthValidationRule, Path=Length}"/>-->
+
+        <TextBox Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                       Margin="5,5,0,5"
+                       Background="#FF404040"
+                       TextWrapping="Wrap"
+                       TextAlignment="Left" 
+                       Foreground="White"
+                       Text="{Binding ElementName=this, Path=Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            
+        </TextBox>
+        
+        <!--<Viewbox Stretch="Uniform" MinWidth="140" MinHeight="21" MaxWidth="280" MaxHeight="42">
+
+        </Viewbox>-->
+
+
+        <Button Grid.Row="0" Grid.Column="2" Margin="2,6,2,3"
+                        Background="#FF404040" Command="{Binding ElementName=this, Path=OpenCommand}">
+            <Viewbox Stretch="Uniform" MinWidth="30" MinHeight="18" MaxWidth="90" MaxHeight="54">
+                <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        TextAlignment="Center" TextWrapping="Wrap"
+                        Margin="5" Foreground="White"
+                        Text="Open"/>
+            </Viewbox>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="2" Margin="2,3,2,6"
+                        Background="#FF404040" Command="{Binding ElementName=this, Path=ClearCommand}">
+            <Viewbox Stretch="Uniform" MinWidth="30" MinHeight="18" MaxWidth="90" MaxHeight="54">
+                <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        TextAlignment="Center" TextWrapping="Wrap"
+                        Margin="5" Foreground="White"
+                        Text="Clear"/>
+            </Viewbox>
+        </Button>
+    </Grid>
+</UserControl>

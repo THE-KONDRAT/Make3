@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Emgu.CV" Version="4.5.3.4721" />
+    <PackageReference Include="Emgu.CV.runtime.windows" Version="4.5.3.4721" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataContainers\DataContainers.csproj" />
+    <ProjectReference Include="..\ImageProcessingUI\ImageProcessingUI.csproj" />
+    <ProjectReference Include="..\ImageProcessing\ImageProcessing.csproj" />
+  </ItemGroup>
+
+</Project>
