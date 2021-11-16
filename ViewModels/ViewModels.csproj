@@ -6,11 +6,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ColorProfile\ColorProfile.csproj" />
     <ProjectReference Include="..\ControlLibrary\ControlLibrary.csproj" />
     <ProjectReference Include="..\DataContainers\DataContainers.csproj" />
     <ProjectReference Include="..\FileOperations\FileOperations.csproj" />
     <ProjectReference Include="..\ProjectClassLib\ProjectClassLib.csproj" />
     <ProjectReference Include="..\UI_Helper\UI_Helper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="NewLayerWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="NewLayerWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

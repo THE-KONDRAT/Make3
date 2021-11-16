@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 namespace Layers
@@ -197,7 +200,16 @@ namespace Layers
         /// </summary>
         public StretchCrop StretchCrop { get; set; }
 
-        public virtual Layers.Additional_containers.ColorProfile ColorProfile { get; set; }
+        private ColorProfile.ColorProfile colorProfile;
+        public virtual ColorProfile.ColorProfile ColorProfile
+        {
+            get { return colorProfile; }
+            set
+            {
+                colorProfile = value;
+                OnPropertyChanged("ColorProfiles");
+            }
+        }
         #endregion
 
         #region Thumbnails
@@ -245,11 +257,33 @@ namespace Layers
         private int imageMaskRatio; //??
 
         private int mmToPixelsCoeff; //??
+        //do not serialize
+        private bool selected;
+        public bool Selected
+        {
+            get { return selected; }
+            set
+            {
+                selected = value;
+                OnPropertyChanged("Selected");
+            }
+        }
         #endregion
 
         public DataContainers.Resolution PreviewResolution { get; set; }
 
         #region Basic methods
+        public virtual Layer GetLayerTemplate()
+        {
+
+            return new Layer();
+        }
+
+        public virtual Layer GetLayerTemplate(string name)
+        {
+            return new Layer();
+        }
+
         public void SetResultDir(string folderpath)
         {
             Mask_WhiteArea = new DataContainers.RectangleDec(new DataContainers.PointDec(0, 1), 20, 10);
@@ -270,6 +304,119 @@ namespace Layers
         {
             Thumbnail = new ImageProcessing.MatToSource();
             maskThumbnail = new ImageProcessing.MatToSource();
+        }
+
+        public static Layers.Layer NewLayer(string technologyName)
+        {
+            Layers.Layer result = null;
+            try
+            {
+                Type t = GetLayerTypeByTechnologyName(technologyName);
+                if (t != null)
+                {
+                    ConstructorInfo ctor = t.GetConstructor(Type.EmptyTypes);
+
+                    result = (Layers.Layer)ctor?.Invoke(null);
+                    result = result.GetLayerTemplate();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return result;
+        }
+
+        public static Regex RegexBaseLayers = new Regex("(_base)$");
+        public static Regex RegexDigitStartLayers = new Regex("^Layer(\\d+\\D*)");
+
+        internal static string GetLayerTechnologyName(Layer layer)
+        {
+            string tName = null;
+
+            string lClassName = layer.GetType().Name;
+
+            //Filter "_base"
+            string matchResult = null;
+            Match match = RegexBaseLayers.Match(lClassName);
+            while (match.Success)
+            {
+                string sMatch = match.Groups[0].Value;
+                matchResult = sMatch;
+                match = match.NextMatch();
+            }
+
+            if (!string.IsNullOrWhiteSpace(matchResult))
+            {
+                return tName;
+            }
+
+            #region starts from number
+            matchResult = null;
+            match = RegexDigitStartLayers.Match(lClassName);
+            while (match.Success)
+            {
+                string sMatch = match.Groups[1].Value;
+                matchResult = sMatch;
+                match = match.NextMatch();
+            }
+
+            if (!string.IsNullOrWhiteSpace(matchResult))
+            {
+                tName = matchResult;
+            }
+            else
+            {
+                tName = lClassName;
+            }
+            /*if (!string.IsNullOrWhiteSpace(matchResult))
+            {
+                return tName;
+            }*/
+            #endregion
+
+            return tName;
+        }
+
+        private static Type GetLayerTypeByTechnologyName(string technologyName)
+        {
+            Type result = null;
+
+            //var layers = typeof(Layers.Layer).Assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(Layers.Layer)));
+
+            try
+            {
+                result = typeof(Layers.Layer).Assembly.GetTypes().Single(x => x.IsSubclassOf(typeof(Layers.Layer)) && x.Name.Equals(technologyName));
+            }
+            catch (Exception e)
+            {
+
+            }
+            //var td = layers.Single(x => x.Name.Equals(technologyName));
+            //result = typeof(layers.w)
+
+            /*foreach (Type t in layers)
+            {
+                if (!t.Name.Contains("_base") && t.Name.Equals(technologyName))
+                {
+                    result = t;
+                }
+            }*/
+
+            return result;
+        }
+
+        public static bool IsLayer(Type t)
+        {
+            bool layer = true;
+
+            layer = t.IsSubclassOf(typeof(Layers.Layer));
+            if (t.Name.Contains("_base"))
+            {
+                layer = false;
+            }
+            return layer;
         }
         #endregion
 

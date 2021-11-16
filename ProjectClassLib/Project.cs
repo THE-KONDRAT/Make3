@@ -32,7 +32,7 @@ namespace ProjectClassLib
         [XmlAttributeAttribute(DataType = "date")]
         public DateTime LastUpdatedDate { get; set; }
 
-        [XmlIgnoreAttribute]
+        /*[XmlIgnoreAttribute]
         /// <summary>
         /// Show index of selected layer (if selected, else = null)
         /// </summary>
@@ -82,7 +82,7 @@ namespace ProjectClassLib
                 layerSelected = input;
                 OnPropertyChanged("LayerSelected");
             }
-        }
+        }*/
         #endregion
 
         #region User params
@@ -155,7 +155,7 @@ namespace ProjectClassLib
         #region Constructors
         public Project()
         {
-            layerSelected = -1;
+            //layerSelected = -1;
         }
         #endregion
 

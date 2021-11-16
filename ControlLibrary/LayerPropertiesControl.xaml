@@ -125,6 +125,24 @@
                     </Grid>
                 </Grid>
                 <Separator/>
+                <!--Color Profile-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Color profile" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                           />
+
+                    <Grid Grid.Column="1">
+
+                        <controlParts:ColorProfileControl_Mini MinHeight="140" HorizontalAlignment="Stretch" Margin="0" 
+                                                               DataContext="{Binding ElementName=this, Path=VM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                </Grid>
+                <Separator/>
                 <!--Mask Path-->
                 <Viewbox Stretch="Uniform">
                     <Grid Width="300">

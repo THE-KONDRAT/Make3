@@ -5,63 +5,74 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ControlLibrary.Control_Parts"
              mc:Ignorable="d" 
-             d:DesignHeight="120" d:DesignWidth="300">
+             d:DesignHeight="140" d:DesignWidth="250"
+             x:Name="this">
     <Grid Background="#FF303030">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="55*"/>
+            <ColumnDefinition Width="0.6*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="5"/>
+            <RowDefinition Height=".6*"/>
+            <RowDefinition Height=".9*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Grid.Column="0"
+        <Label Grid.Column="0" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch">
+            <Label.Content>
+                <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                               TextAlignment="Left" Margin="1"
+                               FontSize="10" Foreground="White"
+                               TextWrapping="Wrap"
+                               Text="Arc Width"/>
+            </Label.Content>
+        </Label>
+        
+        <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
               Background="#FF505050">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".6*"/>
-                <ColumnDefinition Width=".05*"/>
-                <ColumnDefinition Width=".6*"/>
+                <ColumnDefinition Width=".8*"/>
                 <ColumnDefinition Width=".05*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Arc Width" FontSize="10" Foreground="White"
+            <local:NumericUpDownControl Grid.Column="0" Margin="0,7,0,7" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                    TextBorderBrush="Red"
+                                    ReadOnly="False"
+                                    TextFontSize="10"
+                                    TextBackgroundBrush="Gray"
+                                    TextForegroundBrush="White"
+                                    Value="{Binding Path=MainArcWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    MinValue="0"
+                                    MaxValue="100"
+                                    Step="1"
+                                    NumberType="Fractional"/>
+            <Label Grid.Column="2"
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-            <TextBox Grid.Column="2" Margin="0,7,0,7" VerticalAlignment="Center"
-                     Text="12" TextAlignment="Right"/>
-            <Label Grid.Column="4" Content="pix; 0.35 um" FontSize="10" Foreground="White"
-                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                   VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Left">
+                <Label.Content>
+                    <TextBlock>
+                        <Run Text="{Binding Path=MainArcWidthUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="10" Foreground="White"/>
+                        <Run Text=" " FontSize="10" Foreground="Transparent"/>
+                        <Run Text="{Binding Path=AlternateArcWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="10" Foreground="Gray"/>
+                        <Run Text="{Binding Path=AlternateArcWidthUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="10" Foreground="Gray"/>
+                    </TextBlock>
+                </Label.Content>
+            </Label>
         </Grid>
-        <Button Grid.Row="0" Grid.Column="4"
-                Background="Transparent" Foreground="White"
-                BorderThickness="2" BorderBrush="Yellow">
-            <Button.Content>
-                <TextBlock Text="Custom" Foreground="Yellow"/>
-            </Button.Content>
-        </Button>
+        
 
-        <Grid Grid.Row="2" Grid.ColumnSpan="3" Background="#FF343434">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".8*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width=".5*"/>
-                <ColumnDefinition Width=".8*"/>
-            </Grid.ColumnDefinitions>
-            
+        <Grid Grid.Row="1" Background="#FF343434">
             <Grid.RowDefinitions>
-                <RowDefinition Height=".5*"/>
-                <RowDefinition Height=".5*"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
 
             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                   VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Padding="0">
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch">
                 <Label.Content>
                     <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                TextAlignment="Left" Margin="1"
@@ -71,13 +82,8 @@
                 </Label.Content>
             </Label>
 
-            <ComboBox Grid.Row="0" Grid.Column="1"
-                      Margin="5,3,5,2">
-
-            </ComboBox>
-
-            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                   VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Padding="0">
+            <Label Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch">
                 <Label.Content>
                     <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                TextAlignment="Left" Margin="1"
@@ -86,14 +92,55 @@
                                Text="Colorprofile preset"/>
                 </Label.Content>
             </Label>
+        </Grid>
 
-            <ComboBox Grid.Row="1" Grid.Column="1"
-                      Margin="5,3,5,3">
+        <Grid Grid.Row="1" Grid.Column="1" Background="#FF343434">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
+            <ComboBox Grid.Row="0" Grid.Column="1"
+                      Margin="5,3,5,2"
+                      ItemsSource="{Binding Path=Filters, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding Path=SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{Binding Name}" FontSize="10"/>
+                            <!--<Label Content="{Binding Id}" />
+                            <TextBlock Text="{Binding Name}" />-->
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <Image Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                   Margin="0,3,0,0"/>
+            <ComboBox Grid.Row="1" Grid.Column="1"
+                      Margin="5,3,5,3"
+                      ItemsSource="{Binding Path=Templates, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding Path=SelectedTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{Binding Name}" FontSize="10"/>
+                            <Label Content="{Binding MinimalMake3Version}" FontSize="10" HorizontalAlignment="Right"/>
+                            <!--<Label Content="{Binding Id}" />
+                            <TextBlock Text="{Binding Name}" />-->
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </Grid>
+
+        <Button Grid.Row="2"
+                Background="Transparent" Foreground="White"
+                BorderThickness="2" BorderBrush="Yellow">
+            <Button.Content>
+                <TextBlock Text="Custom" Foreground="Yellow"/>
+            </Button.Content>
+        </Button>
+        
+        <Image Grid.Row="2" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   Margin="0,3,0,0"/>
     </Grid>
 </UserControl>

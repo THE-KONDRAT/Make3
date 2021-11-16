@@ -6,11 +6,12 @@
         xmlns:local="clr-namespace:Make3"
         xmlns:control ="clr-namespace:ControlLibrary;assembly=ControlLibrary"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-        xmlns:Control_Parts="clr-namespace:ControlLibrary.Control_Parts;assembly=ControlLibrary" 
+        xmlns:Control_Parts="clr-namespace:ControlLibrary.Control_Parts;assembly=ControlLibrary"
+        xmlns:ViewModels="clr-namespace:ViewModels;assembly=ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1280" WindowStyle="ThreeDBorderWindow"
         x:Name="this"
-        d:DataContext="{d:DesignInstance Type=local:ViewModel}" x:Class="Make3.MainWindow">
+        d:DataContext="{d:DesignInstance Type=ViewModels:MainViewModel}" x:Class="Make3.MainWindow">
 
     <Window.Resources>
         <CollectionViewSource x:Name="LayersCVS" x:Key="LayersCVS" Source="{Binding ProjectLayers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -103,7 +104,8 @@
             </StackPanel>
         </ScrollViewer>
         <control:LayerPropertiesControl x:Name="lpcProps" Grid.Row="1"  Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                        Width="300" Height="600" MinWidth="300" MinHeight="400"/>
+                                        Width="350" Height="600" MinWidth="350" MinHeight="400"/>
+        <Control_Parts:ColorProfileControl_Mini x:Name="cTest" Grid.Column="1" HorizontalAlignment="Left" Margin="353,86,0,0" Grid.Row="1" VerticalAlignment="Top"/>
         <!--LayerName="{Binding Path=LayerSelectedName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                         PreviewCommand="{Binding ElementName=this, Path=ShowPreviewCommand}"
                                         LayerPreview="{Binding Path=LayerSelectedPreview, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"

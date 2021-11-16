@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourcesUI", "ResourcesUI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI_Helper", "UI_Helper\UI_Helper.csproj", "{61F098D4-7860-4CFD-9AD5-CBC19A4F14AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels", "ViewModels\ViewModels.csproj", "{8C8FA00C-E332-47E5-BB0C-D75BB12EE9D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels", "ViewModels\ViewModels.csproj", "{8C8FA00C-E332-47E5-BB0C-D75BB12EE9D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorProfile", "ColorProfile\ColorProfile.csproj", "{A3EB1EA3-06D7-47A6-9193-20401CD84D33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{8C8FA00C-E332-47E5-BB0C-D75BB12EE9D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C8FA00C-E332-47E5-BB0C-D75BB12EE9D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C8FA00C-E332-47E5-BB0C-D75BB12EE9D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3EB1EA3-06D7-47A6-9193-20401CD84D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3EB1EA3-06D7-47A6-9193-20401CD84D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3EB1EA3-06D7-47A6-9193-20401CD84D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3EB1EA3-06D7-47A6-9193-20401CD84D33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

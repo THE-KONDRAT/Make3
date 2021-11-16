@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ColorProfile\ColorProfile.csproj" />
     <ProjectReference Include="..\DataContainers\DataContainers.csproj" />
     <ProjectReference Include="..\FileOperations\FileOperations.csproj" />
     <ProjectReference Include="..\ImageProcessingUI\ImageProcessingUI.csproj" />

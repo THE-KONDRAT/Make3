@@ -329,34 +329,6 @@ namespace ViewModels
 
             return result;
         }
-
-        internal static Type GetLayerTypeByTechnologyName(string technologyName)
-        {
-            Type result = null;
-
-            //var layers = typeof(Layers.Layer).Assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(Layers.Layer)));
-
-            try
-            {
-                result = typeof(Layers.Layer).Assembly.GetTypes().Single(x => x.IsSubclassOf(typeof(Layers.Layer)) && x.Name.Equals(technologyName));
-            }
-            catch (Exception e)
-            {
-
-            }
-            //var td = layers.Single(x => x.Name.Equals(technologyName));
-            //result = typeof(layers.w)
-
-            /*foreach (Type t in layers)
-            {
-                if (!t.Name.Contains("_base") && t.Name.Equals(technologyName))
-                {
-                    result = t;
-                }
-            }*/
-
-            return result;
-        }
         #endregion
     }
 }

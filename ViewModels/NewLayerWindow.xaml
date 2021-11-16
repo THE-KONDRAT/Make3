@@ -1,0 +1,120 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ViewModels"
+        xmlns:controlParts ="clr-namespace:ControlLibrary.Control_Parts;assembly=ControlLibrary"
+        xmlns:validR="clr-namespace:ControlLibrary.ValidationRules;assembly=ControlLibrary"
+        xmlns:ControlLibrary="clr-namespace:ControlLibrary;assembly=ControlLibrary" x:Class="ViewModels.NewLayerWindow"
+        d:DataContext="{d:DesignInstance Type={x:Type local:NewLayerWindow}}"
+        mc:Ignorable="d"
+        Title="New layer"
+        x:Name="this"
+        d:DesignHeight="500" d:DesignWidth="400" Background="{x:Null}">
+    <Grid Background="#FF303030">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.15*"/>
+        </Grid.RowDefinitions>
+        <!--Name and path-->
+        <Grid x:Name="namePathGrid" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <!--<RowDefinition Height="*"/>
+                <RowDefinition Height="0.1*"/>-->
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.1*"/>
+                <RowDefinition Height=".5*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Template" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            <TextBox x:Name="txtProjectName" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                       Margin="5"
+                       Background="#FF404040"
+                       TextAlignment="Left" TextWrapping="Wrap"
+                       FontSize="10" Foreground="White" TextChanged="txtProjectName_TextChanged">
+                <!--Works only when proxy binding has Mode=TwoWay and text binding też ma to samo znaczenie-->
+                <TextBox.Resources>
+                    <validR:BindingProxy x:Key="nameProxy" Data="{Binding ProjectPath, ElementName=this, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </TextBox.Resources>
+                <Binding Path="ProjectName" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validR:ProjectNameRule>
+                            <validR:ProjectNameRule.ProjectPath>
+                                <validR:StringWrapper Value="{Binding Data, Mode=TwoWay, Source={StaticResource nameProxy}, UpdateSourceTrigger=PropertyChanged}"/>
+                            </validR:ProjectNameRule.ProjectPath>
+                        </validR:ProjectNameRule>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox>
+
+            <Line xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  Grid.ColumnSpan="2" Grid.Row="3"
+            X1="0" Y1="0"
+            X2="{Binding ActualWidth, ElementName=namePathGrid}" Y2="0"
+            Margin="1"
+                  Stroke="Gray" StrokeDashArray=".5, .5"
+            StrokeThickness="2" />
+            <!--<Separator Grid.ColumnSpan="2" Grid.Row="3" />-->
+
+            <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" FontSize="16" Foreground="#FFC8C8C8"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                <TextBlock><Run Text="New "/><Run Text=" "/><Run Text="{Binding TechnologyName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/></TextBlock>
+            </Label>
+            <!--<Label Grid.Column="1" Grid.Row="4" Content="{Binding ElementName=this, Path=ProjectFullPath, Mode=OneWay}" FontSize="10" Foreground="#FFC8C8C8"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>-->
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalAlignment="Stretch">
+
+            <ControlLibrary:LayerPropertiesControl
+                />
+
+        </ScrollViewer>
+
+        <!--Buttons (Apply, cancel, delete)-->
+        <Grid Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".7*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width=".5*"/>
+                <ColumnDefinition Width=".2*"/>
+                <ColumnDefinition Width=".6*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="btnSave" Grid.Column="0"
+                        Margin="5"
+                        Background="Green" Click="btnSave_Click">
+                <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        TextAlignment="Center" TextWrapping="Wrap"
+                        FontSize="10" Foreground="White"
+                        Text="Save"/>
+            </Button>
+
+            <Button x:Name="btnDelete" Grid.Column="2"  
+                    Margin="5"    
+                    Background="Red" Click="btnDelete_Click">
+                <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        TextAlignment="Center" TextWrapping="Wrap"
+                        FontSize="10" Foreground="White"
+                        Text="Delete"/>
+            </Button>
+
+            <Button x:Name="btnCancel" Grid.Column="5"
+                        Margin="5"
+                        Background="#FF404040" Click="btnCancel_Click">
+                <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        TextAlignment="Center" TextWrapping="Wrap"
+                        FontSize="10" Foreground="White"
+                        Text="Cancel"/>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

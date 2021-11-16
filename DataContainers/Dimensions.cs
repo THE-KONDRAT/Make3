@@ -114,6 +114,21 @@ namespace DataTypes
         NotNumber=-1
     }
 
+    public enum LinearUnit
+    {
+        nm,
+        um,
+        mm,
+        sm,
+        m
+    }
+
+    public enum ImageDimnsionUnit
+    {
+        pix,
+        si //Si sysyem
+    }
+
     public static class NumberOperations
     {
         public static DataTypes.NumberType DefineNumberType(object value)

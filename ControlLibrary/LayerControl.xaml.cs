@@ -17,6 +17,15 @@ namespace ControlLibrary
         public delegate bool DeleteLayer(int layerId, ulong projectId);
         public event DeleteLayer OnDeleteLayer;
 
+        public delegate void LayerUpClicked(int layerId, ulong projectId);
+        public event LayerUpClicked OnLayerUpClicked;
+
+        public delegate void LayerDownClicked(int layerId, ulong projectId);
+        public event LayerDownClicked OnLayerDownClicked;
+
+        public delegate void LayerControlClicked(object sender, RoutedEventArgs e);
+        public event LayerControlClicked OnLayerControlClicked;
+
         private double controlAdpectRatio = 3.0d;
 
         private double currentHeight;
@@ -124,52 +133,21 @@ namespace ControlLibrary
             }
         }
 
-        /*public static readonly DependencyProperty LayerPreviewProperty = DependencyProperty.Register(
-            "LayerPreview", typeof(System), typeof(LayerControl),
+        public static readonly DependencyProperty LayerSelectedProperty = DependencyProperty.Register(
+            "LayerSelected", typeof(bool), typeof(LayerControl),
             new FrameworkPropertyMetadata(
-                false, new PropertyChangedCallback(OnLayerPreviewPropertyChanged)
+                false, new PropertyChangedCallback(OnLayerSelectedPropertyChanged)
                 )
             );
-        public Emgu.CV.Mat LayerPreview { get; set; }*/
-        /*{
-            get { return (Emgu.CV.Mat)GetValue(LayerPreviewProperty); }
-            set
-            {
-                SetValue(LayerPreviewProperty, value);
-                OnPropertyChanged("LayerPreview");
-            }
-        }*/
-
-        /*public static readonly DependencyProperty LayerMaskProperty = DependencyProperty.Register(
-            "LayerMask", typeof(Emgu.CV.Mat), typeof(LayerControl),
-            new FrameworkPropertyMetadata(
-                false, new PropertyChangedCallback(OnLayerMaskPropertyChanged)
-                )
-            );
-        public Emgu.CV.Mat LayerMask
+        public bool LayerSelected
         {
-            get { return (Emgu.CV.Mat)GetValue(LayerMaskProperty); }
+            get { return (bool)GetValue(LayerSelectedProperty); }
             set
             {
-                SetValue(LayerMaskProperty, value);
-                OnPropertyChanged("LayerMask");
+                SetValue(LayerSelectedProperty, value);
+                OnPropertyChanged("LayerSelected");
             }
         }
-        */
-
-        /*private bool layerEnabled;
-        public bool LayerEnabled
-        {
-            get { return LayerObject == null ? false : LayerObject.Enabled; }
-            set
-            {
-                layerEnabled = layerObj == null ? false : value;
-                layerObj.Enabled = layerEnabled;
-                //SetValue(layerEnabled, value);
-                OnPropertyChanged("LayerEnabled");
-                ChangeEnabled(value);
-            }
-        }*/
         #endregion
 
         public static readonly DependencyProperty LayerPreviewProperty = DependencyProperty.Register(
@@ -329,6 +307,28 @@ namespace ControlLibrary
             EnabledPolygon.Fill = brush;
         }
 
+        private static void OnLayerSelectedPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.Property.PropertyType.Equals(typeof(bool)))
+            {
+                ((LayerControl)sender).ChangeSelected((bool)e.NewValue);
+            }
+        }
+
+        private void ChangeSelected(bool value)
+        {
+            Color selColor = Color.FromRgb(32, 32, 32);
+            Color unsColor = Color.FromRgb(52, 52, 52);
+            SolidColorBrush brush = new SolidColorBrush(selColor);
+            if (!value)
+            {
+                brush = new SolidColorBrush(unsColor);
+            }
+
+            SelectedSP.Background = brush;
+            //EnabledPolygon.Fill = brush;
+        }
+
 
 
         
@@ -347,6 +347,21 @@ namespace ControlLibrary
             }
         }
 
+        private void btnUp_Click(object sender, RoutedEventArgs e)
+        {
+            OnLayerUpClicked?.Invoke(LayerId, projectId);
+        }
+
+        private void btnDown_Click(object sender, RoutedEventArgs e)
+        {
+            OnLayerDownClicked?.Invoke(LayerId, projectId);
+        }
+
+        private void Layer_Click(object sender, RoutedEventArgs e)
+        {
+            OnLayerControlClicked?.Invoke(this, null);
+        }
+
         private void OnPropertyChanged(String property)
         {
             if (PropertyChanged != null)
@@ -355,6 +370,10 @@ namespace ControlLibrary
                 if (property.Equals("LayerEnabled"))
                 {
                     ChangeEnabled(LayerEnabled);
+                }
+                else if (property.Equals("LayerSelected"))
+                {
+                    ChangeSelected(LayerSelected);
                 }
             }
         }

@@ -30,7 +30,8 @@
         <!--Style="{StaticResource SwitchTypeToggleButton}"-->
 
         <!--left side-->
-        <Grid x:Name="TechnologyNameGrid" Grid.Row="0" Grid.RowSpan="3" Background="Green" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid x:Name="TechnologyNameGrid" Grid.Row="0" Grid.RowSpan="3" Background="Green" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+              PreviewMouseDown="Layer_Click">
             <Label x:Name="lblOpticalSchema" Content="{Binding ElementName=this, Path=OpticalSchema, Mode=OneWay}" Foreground="#4BFFFFFF" Padding="0, 0, 0, 0" FontSize="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
                 <Label.LayoutTransform>
@@ -38,14 +39,16 @@
                 </Label.LayoutTransform>
             </Label>
         </Grid>
-        <Viewbox Height="Auto" Width="Auto" Stretch="Fill" Margin="0, 0, 0, 0">
+        <Viewbox Height="Auto" Width="Auto" Stretch="Fill" Margin="0, 0, 0, 0"
+                 PreviewMouseDown="Layer_Click">
             <Grid>
                 <!--<Polygon Stretch="Fill" Points="0, 0, 0, 1, 1, 1" Fill="Green" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0, 0, -1, -1"/>-->
                 <Polygon x:Name="EnabledPolygon" Stretch="Fill" Points="0,0 1,0 1,1" Fill="#FD202020" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0, 0, -0.5, -0.5"/>
             </Grid>
         </Viewbox>
 
-        <Viewbox Height="Auto" Width="Auto" VerticalAlignment="Stretch" Grid.Row="2" HorizontalAlignment="Stretch" Stretch="Fill">
+        <Viewbox Height="Auto" Width="Auto" VerticalAlignment="Stretch" Grid.Row="2" HorizontalAlignment="Stretch" Stretch="Fill"
+                 PreviewMouseDown="Layer_Click">
             <Polygon Stretch="Fill" Points="0,1 1,1 1,0" Fill="#FD404040" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0, -0.5, -0.5, 0"/>
         </Viewbox>
 
@@ -56,7 +59,8 @@
                 <ColumnDefinition Width="0.2*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Row="0" Grid.Column="0" x:Name="lblLayerName" Content="{Binding ElementName=this, Path=LayerName, Mode=OneWay}" Foreground="White" Padding="10, 0, 0, 0" FontSize="10"
-                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"
+                   PreviewMouseDown="Layer_Click"/>
             <!--<mah:ToggleSwitch Grid.Column="1"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                               IsOn="True" ContentDirection="LeftToRight">
                 <mah:ToggleSwitch.Content>
@@ -70,12 +74,14 @@
         </Button>
 
         <!--bottom side-->
-        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" Background="#FD404040">
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" Background="#FD404040"
+                    PreviewMouseDown="Layer_Click">
             <!--<Label x:Name="lblLayerInfo" Content="32 ppu 1920x1080" Foreground="White" Padding="10, 0, 0, 0" FontSize="10"/>-->
 
         </StackPanel>
         <!--center-->
-        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FF343434" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <StackPanel x:Name="SelectedSP" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FF343434" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                    PreviewMouseDown="Layer_Click">
             <Image Width="50" Height="50" Source="{Binding ElementName=this, Path=LayerPreview, Mode=OneWay}" VerticalAlignment="Stretch" Stretch="UniformToFill" Margin="2, 0, 5, 0"
                    RenderOptions.BitmapScalingMode="HighQuality"
                    RenderOptions.EdgeMode="Aliased"/>
@@ -91,10 +97,12 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <Button Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5, 2, 2, 1" Background="Transparent">
-                <TextBlock Text="&#xE70E;" FontSize="10" Foreground="White" FontFamily="Segoe MDL2 Assets"/>
+            <Button x:Name="btnUp" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5, 2, 2, 1" Background="Transparent"
+                    Click="btnUp_Click">
+                <TextBlock Text="&#xE70E;" FontSize="10" Foreground="White" FontFamily="Segoe MDL2 Assets" />
             </Button>
-            <Button Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5, 1, 2, 2" Background="Transparent">
+            <Button x:Name="btnDown" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5, 1, 2, 2" Background="Transparent"
+                    Click="btnDown_Click">
                 <TextBlock Text="&#xE70D;" FontSize="10" Foreground="White" FontFamily="Segoe MDL2 Assets"/>
             </Button>
 

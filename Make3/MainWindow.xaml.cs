@@ -37,9 +37,18 @@ namespace Make3
                 }
             }
             VM = new ViewModels.MainViewModel();
+            VM.Owner = this;
             this.DataContext = VM;
             VM.lpcProps = this.lpcProps;
-            
+
+            ColorProfile.ColorProfileVM cVm = new ColorProfile.ColorProfileVM();
+            cVm.MainArcWidth = 10;
+            VM.cpVM = cVm;
+            cTest.DataContext = VM.cpVM;
+
+            cVm.MainArcWidth = 234;
+            VM.cpVM.MainArcWidth = 1004.2m;
+
             VM.OnChangeLayersDirection += ChangeLayersDirection;
             /*ollectionView v = CollectionViewSource.GetDefaultView((((ViewModel)this.DataContext).ProjectLayers));
             v.SortDescriptions.Clear();
@@ -207,18 +216,15 @@ namespace Make3
             {
                 String pn = sd.PropertyName;
                 sd = new SortDescription(pn, dir);
-                //sd.Direction = ListSortDirection.Ascending;
                 cvs.SortDescriptions[0] = sd;
-                /*if (sd.Direction == dir)
+                /*if (sd.Direction != dir)
                 {
-                    cvs.IsLiveSortingRequested = true;
+                    cvs.SortDescriptions[0] = sd;
                 }
                 else
                 {
-                    cvs.IsLiveSortingRequested = false;
+                    //cvs.DeferRefresh;
                 }*/
-                //ProjectLayersItemSource.Items.Refresh();
-                //sd.Direction = desc ? ListSortDirection.Descending : ListSortDirection.Ascending;
 
             }
         }

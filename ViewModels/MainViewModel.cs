@@ -33,6 +33,8 @@ namespace ViewModels
             }
         }
 
+        public Window Owner { get; set; }
+
         public ObservableCollection<UIElement> LayerPanelElements { get; set; }
         List<string> LayerPanelFavorites { get; set; }
 
@@ -67,6 +69,7 @@ namespace ViewModels
         }
 
         //internal ControlLibrary.LayerPropertiesControl lpcProps;
+        ListSortDirection LayersSortDirection;
 
         #region Selected Layer Properties
         public static readonly DependencyProperty LayerSelectedNameProperty = DependencyProperty.Register(
@@ -120,13 +123,19 @@ namespace ViewModels
         }
         #endregion
 
+        public ColorProfile.ColorProfileVM cpVM;
+
         public MainViewModel()
         {
+            cpVM = new ColorProfile.ColorProfileVM();
             //LayerPanel = new StackPanel();
             LayerPanelElements = new ObservableCollection<UIElement>();
             StatusBar = new StatusBar();
             CreateLayerButtons();
             Projects = new List<ProjectClassLib.Project>();
+
+            LayersSortDirection = ListSortDirection.Descending;
+            OnChangeLayersDirection?.Invoke(LayersSortDirection);
 
             LayerSelectedName = "fuck";
             //ProjectLayers = new ObservableCollection<ControlLibrary.LayerControl>();
@@ -411,9 +420,30 @@ namespace ViewModels
 
         private void NewLayer_Click(object sender, RoutedEventArgs e)
         {
-            string technologyName = LayerPanelOperations.GetLayerNameFromControl(sender);
+            ProjectClassLib.Project curProject = GetCurrentProject();
+            if (curProject == null) return;
+            if (Owner == null) return;
 
-            Layers.Layer l = CreateLayerFromTechnologyName(technologyName);
+            ControlLibrary.ProjectControl pc = new ControlLibrary.ProjectControl();
+            NewLayerWindow nlWindow = new NewLayerWindow(LayerPanelOperations.GetLayerNameFromControl(sender), curProject);
+            nlWindow.Height = 500;
+            nlWindow.Width = 400;
+            nlWindow.Owner = Owner;
+            nlWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            nlWindow.OnCreateLayer += AddNewLayer;
+            nlWindow.OnDeleteProject += DeleteProject;
+            //pcw.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            /*SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(48, 48, 48));
+            pcw.Background = brush;*/
+            //pcw.Content = pc;
+            nlWindow.ShowDialog();
+            return;
+
+            /*string technologyName = LayerPanelOperations.GetLayerNameFromControl(sender);
+
+            Layers.Layer l = Layers.Layer.NewLayer(technologyName);
+
+            l.Id = ProjectClassLib.ProjectLogic.GetNewLayerID(curProject);
 
             #region test layerFill
             l.ImagePath = @"E:\New project 1\Layers\Layer 1\SourceImages\Star3.bmp";
@@ -423,10 +453,10 @@ namespace ViewModels
 
             #endregion
 
-            if (Projects[SelectedProject.GetValueOrDefault(0)].Layers == null) Projects[SelectedProject.GetValueOrDefault(0)].Layers = new List<Layers.Layer>();
+            if (curProject.Layers == null) curProject.Layers = new List<Layers.Layer>();
 
             bool ena = true;
-            ListSortDirection dir = ListSortDirection.Descending;
+            /*ListSortDirection dir = ListSortDirection.Descending;
             if (Projects[SelectedProject.GetValueOrDefault(0)].Layers.Count > 1)
             {
                 ena = !Projects[SelectedProject.GetValueOrDefault(0)].Layers[Projects[SelectedProject.GetValueOrDefault(0)].Layers.Count - 1].Enabled;
@@ -439,29 +469,18 @@ namespace ViewModels
                     l.ImagePath = @"E:\New project 1\Layers\Layer 4\SourceImages\Basket_03.png";
                     l.Image = ImageProcessing.ImageProcessing.LoadMatFromFile(l.ImagePath);
                 }
-            }
-            Projects[SelectedProject.GetValueOrDefault(0)].Layers.Add(l);
+            }*/
 
-            if (ProjectLayers == null) ProjectLayers = new ObservableCollection<ControlLibrary.LayerControl>();
-            ControlLibrary.LayerControl c = new ControlLibrary.LayerControl(l.Enabled, l.OpticalSchema, l.TechnologyName, Projects[SelectedProject.GetValueOrDefault(0)].id);
-            #region binding properties
-            SetOneWayBinding(l, nameof(l.Id), c, ControlLibrary.LayerControl.LayerIdProperty);
-            SetOneWayBinding(l, nameof(l.Name), c, ControlLibrary.LayerControl.LayerNameProperty);
 
-            //thumbnails
-            SetOneWayBinding(l.Thumbnail, nameof(l.Thumbnail.ImageSourceValue), c, ControlLibrary.LayerControl.LayerPreviewProperty);
-            SetOneWayBinding(l.MaskThumbnail, nameof(l.MaskThumbnail.ImageSourceValue), c, ControlLibrary.LayerControl.LayerMaskProperty);
+            //curProject.Layers.Add(l);
 
-            SetTwoWayBinding(l, nameof(l.Order), c, ControlLibrary.LayerControl.LayerOrderProperty);
-            SetTwoWayBinding(l, nameof(l.Enabled), c, ControlLibrary.LayerControl.LayerEnabledProperty);
-            #endregion
-            BindLayerObjToPropertyControl(Projects[SelectedProject.GetValueOrDefault(0)], l);
+            /*l.Order = curProject.Layers.Count - 1;
 
             l.Image = ImageProcessing.ImageProcessing.LoadMatFromFile(l.ImagePath);
             l.Mask = ImageProcessing.ImageProcessing.LoadMatFromFile(l.MaskPath);
 
             //ConstructorInfo ctor = 
-            l.Name = "Layer";
+            /*l.Name = "Layer";
 
             PropertyInfo anglesInfo = l.GetType().GetProperty("AnglesPath");
             if (anglesInfo != null)
@@ -482,61 +501,67 @@ namespace ViewModels
             {
                 DataContainers.Resolution<decimal> arcRadius = new DataContainers.Resolution<decimal>(20, 0.2m);
                 radiusInfo.SetValue(l, arcRadius);
-            }
-            /*Layers.Treko t = new Layers.Treko()
+            }*/
+
+            /*l.Enabled = ena;
+
+            l.Order = curProject.Layers.Count - 1;
+            l.Name += $" {curProject.Layers.Count()} - {l.GetType().Name}";*/
+
+            //AddNewLayer(l);
+            //Select layer
+            //SelectLayer(l);
+            //curProject.LayerSelected = l.Order;
+
+        }
+
+        /// <summary>
+        /// Method to add new layer to project and UI
+        /// </summary>
+        /// <param name="newLayer"></param>
+        /// <returns></returns>
+        private bool AddNewLayer(Layers.Layer newLayer)
+        {
+            bool success = false;
+            ProjectClassLib.Project curProject = GetCurrentProject();
+            if (curProject == null) return success;
+
+            if (curProject.Layers == null)
             {
-                Name = "ababa112231c",
-                ImagePath = @"E:\New project 1\Layers\Layer 1\SourceImages\Star3.bmp",
-                MaskPath = @"E:\New project 1\Layers\Layer 1\Mask\Holog-30x30_Mask_Face.bmp",
-                AnglesPath = @"E:\New project 1\Layers\Layer 1\AnglesFile\ang.ini",
-            };*/
-            l.Enabled = ena;
+                curProject.Layers = new List<Layers.Layer>();
+            }
+            curProject.Layers.Add(newLayer);
 
-            l.Order = Projects[SelectedProject.GetValueOrDefault(0)].Layers.Count - 1;
-            c.LayerId = l.Id = l.Id + Projects[SelectedProject.GetValueOrDefault(0)].Layers.Count;
-            l.Name += $" {Projects[SelectedProject.GetValueOrDefault(0)].Layers.Count()} - {l.GetType().Name}";
-            Projects[SelectedProject.GetValueOrDefault(0)].LayerSelected = l.Order;
+            if (ProjectLayers == null) ProjectLayers = new ObservableCollection<ControlLibrary.LayerControl>();
+            ControlLibrary.LayerControl c = new ControlLibrary.LayerControl(newLayer.Enabled, newLayer.OpticalSchema, newLayer.TechnologyName, curProject.id);
+            #region binding properties to layer control
+            SetOneWayBinding(newLayer, nameof(newLayer.Id), c, ControlLibrary.LayerControl.LayerIdProperty);
+            SetOneWayBinding(newLayer, nameof(newLayer.Name), c, ControlLibrary.LayerControl.LayerNameProperty);
 
-            //BindLayerObjToPropertyControl(l);
+            //thumbnails
+            SetOneWayBinding(newLayer.Thumbnail, nameof(newLayer.Thumbnail.ImageSourceValue), c, ControlLibrary.LayerControl.LayerPreviewProperty);
+            SetOneWayBinding(newLayer.MaskThumbnail, nameof(newLayer.MaskThumbnail.ImageSourceValue), c, ControlLibrary.LayerControl.LayerMaskProperty);
 
-
-
-            //c.InvalidateProperty(ControlLibrary.LayerControl.LayerNameProperty);
-            //c.Width = Auto;
-            //c.Height = Auto;
+            SetTwoWayBinding(newLayer, nameof(newLayer.Order), c, ControlLibrary.LayerControl.LayerOrderProperty);
+            SetTwoWayBinding(newLayer, nameof(newLayer.Enabled), c, ControlLibrary.LayerControl.LayerEnabledProperty);
+            SetTwoWayBinding(newLayer, nameof(newLayer.Selected), c, ControlLibrary.LayerControl.LayerSelectedProperty);
+            #endregion
+            //BindLayerObjToPropertyControl(curProject, newLayer);
 
             c.HorizontalAlignment = HorizontalAlignment.Stretch;
             c.VerticalAlignment = VerticalAlignment.Stretch;
             c.Margin = new Thickness(0, 2, 0, 2);
+            c.OnLayerUpClicked += LayerUp;
+            c.OnLayerDownClicked += LayerDown;
             c.OnDeleteLayer += DeleteLayer;
+            c.OnLayerControlClicked += SelectLayer;
             //c.LayerEnabled = 
             ProjectLayers.Add(c);
-            //Comparison<ControlLibrary.LayerControl> comp = c.Order;
-            //Sort<ControlLibrary.LayerControl>(ProjectLayers, c => c.Order);
-            //ReverseLayerControls();
-
-            SetStatusBarContent(Projects[SelectedProject.GetValueOrDefault(0)]);
-        }
-
-        private Layers.Layer CreateLayerFromTechnologyName(string technologyName)
-        {
-            Layers.Layer result = null;
-            try
-            {
-                Type t = LayerPanelOperations.GetLayerTypeByTechnologyName(technologyName);
-                if (t != null)
-                {
-                    ConstructorInfo ctor = t.GetConstructor(Type.EmptyTypes);
-
-                    result = (Layers.Layer)ctor?.Invoke(null);
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            return result;
+            
+            SetStatusBarContent(curProject);
+            OnChangeLayersDirection?.Invoke(LayersSortDirection);
+            SelectLayer(newLayer);
+            return success = true;
         }
 
         public void ShowSelectedLayerPreview()
@@ -574,8 +599,8 @@ namespace ViewModels
                             }
                             else
                             {
-                                int selectedLayer = Projects[SelectedProject.GetValueOrDefault(0)].LayerSelected;
-                                Projects[SelectedProject.GetValueOrDefault(0)].LayerSelected = selectedLayer;
+                                int selectedLayer = -1;//Projects[SelectedProject.GetValueOrDefault(0)].LayerSelected;
+                                //Projects[SelectedProject.GetValueOrDefault(0)].LayerSelected = selectedLayer;
                                 if (selectedLayer < 0)
                                 {
                                     message = Environment.NewLine + "No layer selected";
@@ -604,6 +629,148 @@ namespace ViewModels
             }
             MessageBox.Show("Preview!" + message);
         }
+
+        private void SelectLayer(object sender, RoutedEventArgs e)
+        {
+            ProjectClassLib.Project curProject = GetCurrentProject();
+
+            #region check project
+            if (curProject == null)
+            {
+                return;
+            }
+            else
+            {
+                if (curProject.Layers == null)
+                {
+                    return;
+                }
+                else if (curProject.Layers.Count < 1)
+                {
+                    return;
+                }
+            }
+            #endregion
+
+            if (sender.GetType().Equals(typeof(ControlLibrary.LayerControl)))
+            {
+                PropertyInfo piLayerEnabled = sender.GetType().GetProperty("LayerEnabled");
+                PropertyInfo piLayerId = sender.GetType().GetProperty("LayerId");
+                int senderID = (int)piLayerId.GetValue(sender);
+                Layers.Layer l = curProject.Layers.Find(x => x.Id.Equals(senderID));
+
+                if (l == null) return;
+
+                SelectLayer(l);
+                /*if ((piLayerEnabled != null) && (piLayerId != null))
+                {
+                    //check properties control
+                    if (lpcProps != null)
+                    {
+                        if (lpcProps.DataContext != null)
+                        {
+                            if (Layers.Layer.IsLayer(lpcProps.DataContext.GetType()) || lpcProps.DataContext.GetType().Equals(typeof(Layers.Layer)))
+                            {
+                                //var a = lpcProps.DataContext;
+                                PropertyInfo pi_propLayerId = lpcProps.DataContext.GetType().GetProperty("Id");
+
+                                int propID = (int)pi_propLayerId.GetValue(lpcProps.DataContext);
+
+                                if (!senderID.Equals(propID))
+                                {
+                                    
+                                    curProject.LayerSelected = propID;
+                                    #region ShowLayerProperties
+                                    BindLayerObjToPropertyControl(curProject, l);
+                                    #endregion
+                                }
+                            }
+                        }
+                    }
+                    //int propLayerID = lpcProps.DataContext;
+                }*/
+            }
+        }
+
+        private void SelectLayer(Layers.Layer layer)
+        {
+            if (layer == null)
+            {
+                return;
+            }
+
+            ProjectClassLib.Project curProject = GetCurrentProject();
+
+            #region check project
+            if (curProject == null)
+            {
+                return;
+            }
+            else
+            {
+                if (curProject.Layers == null)
+                {
+                    return;
+                }
+                else if (curProject.Layers.Count < 1)
+                {
+                    return;
+                }
+            }
+            #endregion
+
+            //check properties control
+            if (lpcProps != null)
+            {
+                if (lpcProps.DataContext != null)
+                {
+                    Layers.Layer propLayer = null;
+                    if (Layers.Layer.IsLayer(lpcProps.DataContext.GetType()) || lpcProps.DataContext.GetType().Equals(typeof(Layers.Layer)))
+                    {
+                        //var a = lpcProps.DataContext;
+                        PropertyInfo pi_propLayerId = lpcProps.DataContext.GetType().GetProperty("Id");
+
+                        int propID = (int)pi_propLayerId.GetValue(lpcProps.DataContext);
+                        propLayer = curProject.Layers.Find(x => x.Id.Equals(propID));
+                        if (propLayer == null) return;
+
+                        if (!layer.Id.Equals(propID))
+                        {
+
+                            //Unselect layer
+                            propLayer.Selected = false;
+
+                            //Select layer
+                            layer.Selected = true;
+
+                            //curProject.LayerSelected = layer.Id;
+                            #region ShowLayerProperties
+                            BindLayerObjToPropertyControl(curProject, layer);
+                            #endregion
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < curProject.Layers.Count; i++)
+                        {
+                            Layers.Layer l = curProject.Layers[i];
+                            if (l.Id != layer.Id)
+                            {
+                                l.Selected = false;
+                            }
+                            else
+                            {
+                                l.Selected = true;
+                                #region ShowLayerProperties
+                                BindLayerObjToPropertyControl(curProject, layer);
+                                #endregion
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #region Binding
         private void SetOneWayBinding(object source, string sourcePropertyName, DependencyObject targetObject, DependencyProperty targetProperty)
         {
@@ -634,8 +801,34 @@ namespace ViewModels
                 lpcProps.DataContext = layer;
                 //SetOneWayBinding(layer, nameof(layer), (ViewModel)this, ViewModel.LayerSelectedProperty);
                 //SetOneWayBinding(layer, nameof(layer.Name), (ViewModel)this, ViewModel.LayerSelectedNameProperty);
-                var a = LayerSelectedName;
+                //var a = LayerSelectedName;
                 //var b = LayerSelected.Name;
+
+                if (layer.ColorProfile == null)
+                {
+                    layer.ColorProfile = new ColorProfile.ColorProfile();
+                    layer.ColorProfile.ArcWidth = 12 * 1000; //nm
+                }
+
+                if (cpVM == null) cpVM = new ColorProfile.ColorProfileVM();
+                //lpcProps.VM = cpVM;
+                //Set TwoWay Binding
+                cpVM.LoadByColorProfile(layer.ColorProfile);
+
+                SetTwoWayBinding(layer, nameof(layer.ColorProfile), cpVM, ColorProfile.ColorProfileVM.ColorProfileProperty);
+                //SetTwoWayBinding(layer.ColorProfile, nameof(layer.ColorProfile.ArcWidth), cpVM, ColorProfile.ColorProfileVM.ArcWidthProperty);
+
+                //var a = cpVM.ColorProfile;
+                
+                //cpVM.ArcWidthLinearUnit = DataTypes.LinearUnit.nm;
+                //cpVM.ArcWidthDimnsionUnit = DataTypes.ImageDimnsionUnit.pix;
+                /*cpVM.Loading = true;
+                cpVM.ArcWidth = 4.32m * layer.Order + 1;
+                cpVM.Loading = false;*/
+                //layer.ColorProfile.ArcWidth = (4.32m * layer.Order + 1) * 1000;
+                lpcProps.VM = cpVM;
+                
+
 
                 //thumbnails
                 //SetOneWayBinding(layer.Thumbnail, nameof(layer.Thumbnail.ImageSourceValue), this, ViewModel.LayerSelectedPreviewProperty);
@@ -674,6 +867,15 @@ namespace ViewModels
             pcw.Background = brush;*/
             //pcw.Content = pc;
             pcw.ShowDialog();
+        }
+
+        private ProjectClassLib.Project GetCurrentProject()
+        {
+            ProjectClassLib.Project project = null;
+
+            project = Projects[SelectedProject.GetValueOrDefault(0)];
+            
+            return project;
         }
 
         public void OpenProjectFromFile(Window owner)
@@ -720,25 +922,6 @@ namespace ViewModels
             return success;
         }
 
-        private void ReverseLayerControls()
-        {
-            if (ProjectLayers != null)
-            {
-                ProjectLayers = new ObservableCollection<ControlLibrary.LayerControl>(ProjectLayers.Reverse());
-            }
-        }
-
-        /*public static void Sort<T>(this ObservableCollection<T> collection, Comparison<T> comparison)
-        {
-            var sortableList = new List<T>(collection);
-            sortableList.Sort(comparison);
-
-            for (int i = 0; i < sortableList.Count; i++)
-            {
-                collection.Move(collection.IndexOf(sortableList[i]), i);
-            }
-        }*/
-
 
         private bool DeleteLayer(int layerId, ulong projectId)
         {
@@ -757,7 +940,16 @@ namespace ViewModels
                             int deletedOrder = layer.Order;
                             project.Layers.Remove(layer);
                             ProjectLayers.Remove(lc);
+                            
                             //UpdateOrders
+                            if (project.Layers.Count > 0)
+                            {
+                                UpdateLayersOrders(project);
+                            }
+                            else
+                            {
+                                lpcProps = null; //empty panel
+                            }
                             success = true;
                         }
 
@@ -766,6 +958,109 @@ namespace ViewModels
                 }
             }
             return success;
+        }
+
+
+        #region Layer order changing
+        private void LayerUp(int layerId, ulong projectId)
+        {
+            LayerUp(layerId, projectId, 1);
+        }
+
+        private void LayerUp(int layerId, ulong projectId, uint step)
+        {
+            if (step < 0) return;
+
+            ProjectClassLib.Project project = Projects.Find(x => x.id.Equals(projectId));
+            
+            if (ProjectClassLib.ProjectLogic.CheckProjectLayersExists(project) && CheckLayerControlsNotEmpty())
+            {
+                Layers.Layer layer = project.Layers.Find(x => x.Id.Equals(layerId));
+                if (layer != null)
+                {
+                    if (layer.Order + step < project.Layers.Count)
+                    {
+                        MessageBox.Show("Up: " + layer.Name);
+                        Layers.Layer upperLayer = project.Layers.Find(x => x.Order == (int)(layer.Order + step));
+                        layer.Order += (int)step;
+                        upperLayer.Order -= (int)step;
+                        OnChangeLayersDirection?.Invoke(LayersSortDirection);
+                    }
+                }
+            }
+        }
+
+        private void LayerDown(int layerId, ulong projectId)
+        {
+            LayerDown(layerId, projectId, 1);
+        }
+
+        private void LayerDown(int layerId, ulong projectId, uint step)
+        {
+            if (step < 0) return;
+
+            ProjectClassLib.Project project = Projects.Find(x => x.id.Equals(projectId));
+
+            if (ProjectClassLib.ProjectLogic.CheckProjectLayersExists(project) && CheckLayerControlsNotEmpty())
+            {
+                Layers.Layer layer = project.Layers.Find(x => x.Id.Equals(layerId));
+                if (layer != null)
+                {
+                    if (layer.Order - step >= 0)
+                    {
+                        MessageBox.Show("Down: " + layer.Name);
+                        Layers.Layer lowerLayer = project.Layers.Find(x => x.Order == layer.Order - step);
+                        //var a = lowerLayer.Order;
+                        //lowerLayer.Order = -1000;
+                        layer.Order -= (int)step;
+                        //lowerLayer.Order = a++;
+                        lowerLayer.Order += (int)step;
+                        OnChangeLayersDirection?.Invoke(LayersSortDirection);
+                    }
+                }
+            }
+        }
+
+        #endregion
+        private bool CheckLayerControlsNotEmpty()
+        {
+            bool success = true;
+
+            if (ProjectLayers == null)
+            {
+                success = false;
+            }
+            else if (ProjectLayers.Count <= 0)
+            {
+                success = false;
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// Method to update payers orders when delete 1 layer
+        /// </summary>
+        /// <param name="project"></param>
+        private void UpdateLayersOrders(ProjectClassLib.Project project)
+        {
+            if (project.Layers == null) return;
+            if (project.Layers.Count <= 0) return;
+
+            for (int i = 0; i < project.Layers.Count; i++)
+            {
+                project.Layers.OrderBy(x => x.Order);
+                Layers.Layer l = project.Layers[i];
+                if (l.Order != i)
+                {
+                    l.Order = i;
+                }
+            }
+            //OnChangeLayersDirection?.Invoke(LayersSortDirection);
+            /*foreach (Control ie in ProjectLayers)
+            {
+                var a = ((ControlLibrary.LayerControl)ie).LayerOrder;
+            }*/
         }
 
         public void Exit(Window owner)

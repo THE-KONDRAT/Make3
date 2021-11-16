@@ -14,6 +14,28 @@ namespace ControlLibrary
         // property changed event
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private ColorProfile.ColorProfileVM vm;
+        public ColorProfile.ColorProfileVM VM
+        {
+            get { return vm; }
+            set
+            {
+                vm = value;
+                OnPropertyChanged("VM");
+            }
+        }
+        /*
+        public static readonly DependencyProperty VMProperty =
+            DependencyProperty.Register(
+                "VM",
+                typeof(ColorProfile.ColorProfileVM),
+                typeof(LayerPropertiesControl));
+        public ColorProfile.ColorProfileVM VM
+        {
+            get { return (ColorProfile.ColorProfileVM)GetValue(VMProperty); }
+            set { SetValue(VMProperty, value); }
+        }
+        */
         #region Events
         public delegate void PreviewClicked();
         public event PreviewClicked OnPreviewClicked;
