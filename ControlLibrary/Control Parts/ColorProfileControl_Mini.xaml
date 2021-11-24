@@ -14,8 +14,10 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height=".6*"/>
-            <RowDefinition Height=".9*"/>
+            <RowDefinition Height="2.5*"/>
+            <RowDefinition Height="3.5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2.0*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -132,15 +134,23 @@
             </ComboBox>
         </Grid>
 
-        <Button Grid.Row="2"
+        <Button Grid.Row="3"
                 Background="Transparent" Foreground="White"
                 BorderThickness="2" BorderBrush="Yellow">
             <Button.Content>
-                <TextBlock Text="Custom" Foreground="Yellow"/>
+                <TextBlock Text="Custom" Foreground="Yellow" FontSize="10"/>
             </Button.Content>
         </Button>
-        
-        <Image Grid.Row="2" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                   Margin="0,3,0,0"/>
+
+        <!--<Viewbox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                 Width="Auto" Height="50"
+                 Stretch="UniformToFill">
+            <Image VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="50" Height="50"
+                   Source="{Binding Path=CpThumbnail, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill"/>
+        </Viewbox>-->
+
+        <Image Grid.Row="2" Grid.RowSpan="3" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Stretch="Uniform"
+               Height="50"
+                   Margin="0,3,0,0" Source="{Binding Path=CpThumbnail, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </UserControl>

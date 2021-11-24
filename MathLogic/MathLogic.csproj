@@ -6,8 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataContainers\DataContainers.csproj" />
-    <ProjectReference Include="..\FileOperations\FileOperations.csproj" />
-    <ProjectReference Include="..\Layers\Layers.csproj" />
   </ItemGroup>
 
 </Project>

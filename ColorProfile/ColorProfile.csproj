@@ -7,6 +7,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataContainers\DataContainers.csproj" />
+    <ProjectReference Include="..\ImageProcessingUI\ImageProcessingUI.csproj" />
+    <ProjectReference Include="..\ImageProcessing\ImageProcessing.csproj" />
+    <ProjectReference Include="..\MathLogic\MathLogic.csproj" />
+    <ProjectReference Include="..\UI_Helper\UI_Helper.csproj" />
   </ItemGroup>
 
 </Project>

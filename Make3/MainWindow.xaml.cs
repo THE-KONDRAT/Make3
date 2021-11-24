@@ -42,12 +42,12 @@ namespace Make3
             VM.lpcProps = this.lpcProps;
 
             ColorProfile.ColorProfileVM cVm = new ColorProfile.ColorProfileVM();
-            cVm.MainArcWidth = 10;
+            //cVm.MainArcWidth = 10;
             VM.cpVM = cVm;
-            cTest.DataContext = VM.cpVM;
+            //cTest.DataContext = VM.cpVM;
 
-            cVm.MainArcWidth = 234;
-            VM.cpVM.MainArcWidth = 1004.2m;
+            //cVm.MainArcWidth = 234;
+            //VM.cpVM.MainArcWidth = 1004.2m;
 
             VM.OnChangeLayersDirection += ChangeLayersDirection;
             /*ollectionView v = CollectionViewSource.GetDefaultView((((ViewModel)this.DataContext).ProjectLayers));

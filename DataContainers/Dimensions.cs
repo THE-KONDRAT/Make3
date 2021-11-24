@@ -120,7 +120,8 @@ namespace DataTypes
         um,
         mm,
         sm,
-        m
+        m,
+        inch
     }
 
     public enum ImageDimnsionUnit

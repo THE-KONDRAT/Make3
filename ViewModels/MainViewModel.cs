@@ -745,7 +745,8 @@ namespace ViewModels
 
                             //curProject.LayerSelected = layer.Id;
                             #region ShowLayerProperties
-                            BindLayerObjToPropertyControl(curProject, layer);
+                            //BindLayerObjToPropertyControl(curProject, layer);
+                            LayerProperteisControlOperations.BindLayerObjToPropertyControl(layer, lpcProps);
                             #endregion
                         }
                     }
@@ -762,7 +763,8 @@ namespace ViewModels
                             {
                                 l.Selected = true;
                                 #region ShowLayerProperties
-                                BindLayerObjToPropertyControl(curProject, layer);
+                                LayerProperteisControlOperations.BindLayerObjToPropertyControl(layer, lpcProps);
+                                //BindLayerObjToPropertyControl(curProject, layer);
                                 #endregion
                             }
                         }
@@ -814,12 +816,13 @@ namespace ViewModels
                 //lpcProps.VM = cpVM;
                 //Set TwoWay Binding
                 cpVM.LoadByColorProfile(layer.ColorProfile);
-
                 SetTwoWayBinding(layer, nameof(layer.ColorProfile), cpVM, ColorProfile.ColorProfileVM.ColorProfileProperty);
+                SetTwoWayBinding(layer.ColorProfile, nameof(layer.ColorProfile.ArcWidth), cpVM, ColorProfile.ColorProfileVM.ArcWidthProperty);
+                layer.ColorProfile.ArcWidth = 12000;
                 //SetTwoWayBinding(layer.ColorProfile, nameof(layer.ColorProfile.ArcWidth), cpVM, ColorProfile.ColorProfileVM.ArcWidthProperty);
 
                 //var a = cpVM.ColorProfile;
-                
+
                 //cpVM.ArcWidthLinearUnit = DataTypes.LinearUnit.nm;
                 //cpVM.ArcWidthDimnsionUnit = DataTypes.ImageDimnsionUnit.pix;
                 /*cpVM.Loading = true;

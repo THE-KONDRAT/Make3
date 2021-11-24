@@ -189,6 +189,17 @@ namespace ColorProfile
                 OnPropertyChanged("ColorProfile");
             }
         }
+
+        private System.Windows.Media.ImageSource cp_thumbnail;
+        public System.Windows.Media.ImageSource CpThumbnail
+        {
+            get { return cp_thumbnail; }
+            set
+            {
+                cp_thumbnail = value;
+                OnPropertyChanged("CpThumbnail");
+            }
+        }
         #endregion
 
         public ColorProfileVM()
@@ -262,6 +273,8 @@ namespace ColorProfile
 
         private void FillTemplates()
         {
+            DataContainers.ColorProfileTemplate st = SelectedTemplate;
+
             if (Templates == null)
             {
                 Templates = new ObservableCollection<DataContainers.ColorProfileTemplate>();
@@ -328,9 +341,33 @@ namespace ColorProfile
             }*/
             try
             {
-                SelectedTemplate= Templates[0];
+                if (st != null)
+                {
+                    //DataContainers.ColorProfileTemplate ct = Templates.Where(x => x.Name.Equals(st.Name) && x.KeyPoints.Equals(st.KeyPoints)).FirstOrDefault();
+                    DataContainers.ColorProfileTemplate ct = Templates.Where(x => x.Equals(st)).FirstOrDefault();
+                    int index = Templates.IndexOf(ct);
+                    //index = 
+                    if (index >= 0)
+                    {
+                        SelectedTemplate = Templates[index];
+                    }
+                    else
+                    {
+                        SelectedTemplate = Templates[0];
+                    }
+                }
+                else
+                {
+                    SelectedTemplate = Templates[0];
+                }
+
+                if (selectedTemplate.Thumbnail == null)
+                {
+                    SelectedTemplate.CreateThumbnail();
+                }
+                CpThumbnail = selectedTemplate.Thumbnail.Source;
             }
-            catch
+            catch (Exception e)
             {
 
             }
@@ -425,15 +462,55 @@ namespace ColorProfile
                     //ColorProfile = profile;
                     ColorProfile = new ColorProfile();
                     SelectedTemplate = t;
+                    //ArcWidth = profile.ArcWidth;
                     //SelectedTemplate.ArcWidth = profile.ArcWidth;
                 }
                 else
                 {
                     //load default?
                 }
-                
+                if (selectedTemplate.Thumbnail == null)
+                {
+                    SelectedTemplate.CreateThumbnail();
+                }
+                CpThumbnail = selectedTemplate.Thumbnail.Source;
             }
             Loading = false;
+        }
+
+        private void SetTemplateToColorProfile()
+        {
+            if (Loading) return;
+            if (selectedTemplate != null)
+            {
+                if (ColorProfile != null)
+                {
+                    int layerID = ColorProfile.LayerID;
+                    ColorProfile cp = new ColorProfile();
+                    cp.ArcWidth = ArcWidth;
+                    cp.id = layerID;
+                    cp.Name = selectedTemplate.Name;
+                    cp.Template = true;
+                    //if not template - false;
+                    cp.KeyPointsToTraceProfile(selectedTemplate.KeyPoints);
+                    ColorProfile = cp;
+                    //selectedTemplate.Thumbnail = crTh();
+                    if (selectedTemplate.Thumbnail == null)
+                    {
+                        SelectedTemplate.CreateThumbnail();
+                    }
+                    CpThumbnail = selectedTemplate.Thumbnail.Source;
+                }
+            }
+        }
+
+        private System.Windows.Controls.Image crTh()
+        {
+            System.Windows.Controls.Image img = null;
+            //SelectedTemplate.KeyPoints;
+            SelectedTemplate.CreateThumbnail();
+            img.Source = SelectedTemplate.Thumbnail.Source;
+            return img;
         }
 
         #region Arc width
@@ -468,26 +545,6 @@ namespace ColorProfile
             }
         }
 
-        private void SetTemplateToColorProfile()
-        {
-            if (Loading) return;
-            if (selectedTemplate != null)
-            {
-                if (ColorProfile != null)
-                {
-                    int layerID = ColorProfile.LayerID;
-                    ColorProfile cp = new ColorProfile();
-                    cp.ArcWidth = ArcWidth;
-                    cp.id = layerID;
-                    cp.Name = selectedTemplate.Name;
-                    cp.Template = true;
-                    //if not template - false;
-                    cp.KeyPointsToTraceProfile(selectedTemplate.KeyPoints);
-                    ColorProfile = cp;
-                }
-            }
-        }
-
         public void UpdateValues()
         {
             Loading = true;
@@ -497,25 +554,43 @@ namespace ColorProfile
 
         private void SetVisibleValues(decimal width)
         {
+            System.Globalization.NumberFormatInfo ni = System.Globalization.NumberFormatInfo.InvariantInfo;
             if (ArcWidthDimnsionUnit.Equals(DataTypes.ImageDimnsionUnit.si))
             {
                 //main si alternate pix
-                MainArcWidth = ConvertNMtoLinearValue(ArcWidth);
+                MainArcWidth = Convert.ToDecimal(MathLogic.Math.ConvertUnits(
+                Convert.ToDouble(ArcWidth, ni), DataTypes.LinearUnit.nm, ArcWidthLinearUnit), ni);
+                //MainArcWidth = ConvertNMtoLinearValue(ArcWidth);
 
-                AlternateArcWidth = Math.Round(ConvertNMtoPix(ArcWidth), accuracy, MidpointRounding.AwayFromZero);
+                AlternateArcWidth = Math.Round(ConvertNMtoPix(ArcWidth)
+                    , accuracy, MidpointRounding.AwayFromZero);
             }
             else if (ArcWidthDimnsionUnit.Equals(DataTypes.ImageDimnsionUnit.pix))
             {
                 //main pix alternate si
                 MainArcWidth = ConvertNMtoPix(ArcWidth);
 
-                AlternateArcWidth = Math.Round(ConvertNMtoLinearValue(ArcWidth), accuracy, MidpointRounding.AwayFromZero);
+                AlternateArcWidth = Math.Round(Convert.ToDecimal(MathLogic.Math.ConvertUnits(
+                Convert.ToDouble(ArcWidth, ni), DataTypes.LinearUnit.nm, ArcWidthLinearUnit), ni), 
+                    accuracy, MidpointRounding.AwayFromZero);
             }
         }
 
         private decimal ConvertNMtoLinearValue(decimal value)
         {
             decimal result = value;
+
+            System.Globalization.NumberFormatInfo ni = System.Globalization.NumberFormatInfo.InvariantInfo;
+
+            result = Convert.ToDecimal(MathLogic.Math.ConvertUnits(
+                Convert.ToDouble(value, ni), DataTypes.LinearUnit.nm, ArcWidthLinearUnit), ni);
+            /*var a = MathLogic.Math.ConvertUnits(15, DataTypes.LinearUnit.inch, DataTypes.LinearUnit.nm);
+            var b = MathLogic.Math.ConvertUnits(15, DataTypes.LinearUnit.inch, DataTypes.LinearUnit.um);
+            var c = MathLogic.Math.ConvertUnits(1, DataTypes.LinearUnit.m, DataTypes.LinearUnit.nm);
+            var d = MathLogic.Math.ConvertUnits(3, DataTypes.LinearUnit.sm, DataTypes.LinearUnit.nm);
+            var e = MathLogic.Math.ConvertUnits(8, DataTypes.LinearUnit.mm, DataTypes.LinearUnit.nm);
+            var f = MathLogic.Math.ConvertUnits(120, DataTypes.LinearUnit.um, DataTypes.LinearUnit.nm);
+            var g = MathLogic.Math.ConvertUnits(120, DataTypes.LinearUnit.m, DataTypes.LinearUnit.inch);
 
             switch (ArcWidthLinearUnit)
             {
@@ -526,7 +601,7 @@ namespace ColorProfile
                     result = value / 1000m;
                     break;
 
-            }
+            }*/
 
             return result;
         }

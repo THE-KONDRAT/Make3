@@ -86,6 +86,9 @@ namespace ProjectClassLib
         #endregion
 
         #region User params
+        /// <summary>
+        /// 
+        /// </summary>
         public string FullPath { get; set; }
         public string ResultFullPath { get; set; }
 

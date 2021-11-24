@@ -100,6 +100,7 @@ namespace ControlLibrary
 
         public LayerPropertiesControl()
         {
+            //VM = new ColorProfile.ColorProfileVM();
             InitializeComponent();
             //LayerName = "testL";
 

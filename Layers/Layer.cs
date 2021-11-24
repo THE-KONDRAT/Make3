@@ -276,7 +276,7 @@ namespace Layers
         public virtual Layer GetLayerTemplate()
         {
 
-            return new Layer();
+            return null;
         }
 
         public virtual Layer GetLayerTemplate(string name)
@@ -329,13 +329,19 @@ namespace Layers
         }
 
         public static Regex RegexBaseLayers = new Regex("(_base)$");
-        public static Regex RegexDigitStartLayers = new Regex("^Layer(\\d+\\D*)");
+        public static Regex RegexDigitStartLayers = new Regex("^Layer(\\d+.*)");
+        public static Regex RegexDigitStartTechnologyName = new Regex("^(\\d+.*)");
 
         internal static string GetLayerTechnologyName(Layer layer)
         {
+            return GetLayerTechnologyName(layer.GetType());
+        }
+
+        public static string GetLayerTechnologyName(Type layerType)
+        {
             string tName = null;
 
-            string lClassName = layer.GetType().Name;
+            string lClassName = layerType.Name;
 
             //Filter "_base"
             string matchResult = null;
@@ -379,15 +385,25 @@ namespace Layers
             return tName;
         }
 
-        private static Type GetLayerTypeByTechnologyName(string technologyName)
+        private static Type GetLayerTypeByTechnologyName(string techName)
         {
             Type result = null;
 
             //var layers = typeof(Layers.Layer).Assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(Layers.Layer)));
+            string l_tName = techName;
+
+            Match match = RegexDigitStartTechnologyName.Match(techName);
+            while (match.Success)
+            {
+                string sMatch = match.Groups[0].Value;
+                l_tName = $"Layer{sMatch}";
+                match = match.NextMatch();
+            }
 
             try
             {
-                result = typeof(Layers.Layer).Assembly.GetTypes().Single(x => x.IsSubclassOf(typeof(Layers.Layer)) && x.Name.Equals(technologyName));
+                //var a = techName;
+                result = typeof(Layers.Layer).Assembly.GetTypes().Single(x => x.IsSubclassOf(typeof(Layers.Layer)) && x.Name.Equals(l_tName));                
             }
             catch (Exception e)
             {

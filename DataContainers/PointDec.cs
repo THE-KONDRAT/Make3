@@ -33,11 +33,7 @@ namespace DataContainers
         /// <returns></returns>
         public bool Equals(PointDec other)
         {
-            if (this.Equals(other))
-            {
-                return true;
-            }
-            else return false;
+            return this.X.Equals(other.X) && this.Y.Equals(other.Y);
         }
     }
 }

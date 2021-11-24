@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -77,11 +78,14 @@ namespace ViewModels
                 OnPropertyChanged("TechnologyName");
             }
         }
+
+        public ColorProfile.ColorProfileVM cpVM;
         #endregion
 
         public NewLayerWindow()
         {
             TechnologyName = " ";
+            cpVM = new ColorProfile.ColorProfileVM();
             InitializeComponent();
             Init_Control(technologyName);
         }
@@ -89,7 +93,10 @@ namespace ViewModels
         public NewLayerWindow(string techName, ProjectClassLib.Project project)
         {
             TechnologyName = techName;
+            cpVM = new ColorProfile.ColorProfileVM();
             InitializeComponent();
+            lpcProps.VM = cpVM;
+            cpVM.MainArcWidth = 10;
             projectObj = project;
             Init_Control(techName);
         }
@@ -112,10 +119,10 @@ namespace ViewModels
             b.Mode = BindingMode.OneWay;
             b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             //BindingOperations.SetBinding(txtProjectPath, txtProjectPath.Text, b);
-            if (layerObj != null)
+            /*if (layerObj != null)
             {
                 LoadControlByLayer(layerObj);
-            }
+            }*/
             //OnPropertyChanged("UnitSize");
             //maskWidth = "4800";
             //maskHeight = "2387";
@@ -153,44 +160,36 @@ namespace ViewModels
 
                 newLayer.Image = ImageProcessing.ImageProcessing.LoadMatFromFile(newLayer.ImagePath);
                 newLayer.Mask = ImageProcessing.ImageProcessing.LoadMatFromFile(newLayer.MaskPath);
+
                 #endregion
 
                 #region Order, name, ID
-                int layersCount = 0;
-                if (projectObj != null)
-                {
-                    if (projectObj.Layers != null)
-                    {
-                        layersCount = projectObj.Layers.Count;
-                    }
-                }
-                newLayer.Name = $"Layer {layersCount + 1} - {newLayer.TechnologyName}";
-                newLayer.Order = layersCount;
-
+                newLayer.Order = (int)ProjectClassLib.ProjectLogic.GetNewLayerOrder(projectObj);
+                newLayer.Name = $"Layer {newLayer.Order + 1} - {newLayer.TechnologyName}";
                 newLayer.Id = ProjectClassLib.ProjectLogic.GetNewLayerID(projectObj);
                 #endregion
 
-                /*PropertyInfo anglesInfo = l.GetType().GetProperty("AnglesPath");
+                PropertyInfo anglesInfo = newLayer.GetType().GetProperty("AnglesPath");
                 if (anglesInfo != null)
                 {
                     string anglesPath = @"E:\New project 1\Layers\Layer 1\AnglesFile\ang.ini";
-                    anglesInfo.SetValue(l, anglesPath);
+                    anglesInfo.SetValue(newLayer, anglesPath);
                 }
 
-                PropertyInfo stepInfo = l.GetType().GetProperty("Step");
+                /*PropertyInfo stepInfo = newLayer.GetType().GetProperty("Step");
                 if (stepInfo != null)
                 {
                     decimal step = 0.625m;
-                    stepInfo.SetValue(l, step);
+                    stepInfo.SetValue(newLayer, step);
                 }
 
-                PropertyInfo radiusInfo = l.GetType().GetProperty("ArcRadius");
+                PropertyInfo radiusInfo = newLayer.GetType().GetProperty("ArcRadius");
                 if (radiusInfo != null)
                 {
                     DataContainers.Resolution<decimal> arcRadius = new DataContainers.Resolution<decimal>(20, 0.2m);
-                    radiusInfo.SetValue(l, arcRadius);
-                }
-                */
+                    radiusInfo.SetValue(newLayer, arcRadius);
+                }*/
+                
             }
             else
             {
@@ -202,7 +201,8 @@ namespace ViewModels
 
         private void LoadControlByLayer(Layers.Layer layer)
         {
-            
+            //Bindings
+            LayerProperteisControlOperations.BindLayerObjToPropertyControl(layer, lpcProps);
         }
 
         private void UpdateByTechnologyName()
@@ -210,15 +210,7 @@ namespace ViewModels
 
         }
 
-        private void OnPropertyChanged(String property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-
+        #region Buttons
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             bool success = (OnCreateLayer?.Invoke(layerObj)).GetValueOrDefault(false);
@@ -229,62 +221,19 @@ namespace ViewModels
 
         }
 
-        private void btnDelete_Click(object sender, RoutedEventArgs e)
-        {
-            //Спросить
-            /*bool success = (OnDeleteProject?.Invoke(projectObj.id)).GetValueOrDefault(false);
-            if (success)
-            {
-                LoadProjectTemplate();
-            }*/
-        }
-
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
+        #endregion
 
-
-        private void btnOpen_Click(object sender, RoutedEventArgs e)
+        private void OnPropertyChanged(String property)
         {
-            /*if (projectObj != null)
+            if (PropertyChanged != null)
             {
-                ControlLibrary.DialogService.FileDialogService FDS = new ControlLibrary.DialogService.FileDialogService();
-                if (FDS.OpenFileDialog())
-                {
-                    ProjectPath = FDS.FilePath;
-                }
-            }*/
+                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
         }
-
-        private void btnClear_Click(object sender, RoutedEventArgs e)
-        {
-            /*if (projectObj != null)
-            {
-                ProjectPath = null;
-                /*projectObj.FullPath = null;
-                //OnPropertyChanged("ProjectPath");*/
-            //}
-        }
-
-
-        private void txtProjectName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            OnPropertyChanged("ProjectFullPath");
-        }
-
-        private void txtProjectPath_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            OnPropertyChanged("ProjectFullPath");
-        }
-
-        private void ValidateNamePath(object sender, string name, string path)
-        {
-            TextBox tb = (TextBox)sender;
-
-            //tb.
-        }
-
 
         /*
         // команда открытия файла

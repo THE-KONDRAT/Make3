@@ -7,6 +7,36 @@ namespace FileOperations
     public static class FileAccess
     {
         #region Logic
+        #region Creation
+        public static bool CreateFile(string path)
+        {
+            bool result = false;
+            try
+            {
+                File.Create(path);
+            }
+            catch(Exception e)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+        public static bool CreateDirectory(string path)
+        {
+            bool result = false;
+            try
+            {
+                Directory.CreateDirectory(path);
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            return result;
+        }
+        #endregion
+
         public static bool CheckFileExists(string path)
         {
             bool result = false;

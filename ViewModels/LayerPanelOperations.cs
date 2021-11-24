@@ -321,10 +321,16 @@ namespace ViewModels
                 {
                     result = new List<string>();
                 }
-                if (!t.Name.Contains("_base"))
+                string lTechName = Layers.Layer.GetLayerTechnologyName(t);
+                if (!string.IsNullOrWhiteSpace(lTechName))
+                {
+                    result.Add(lTechName);
+                }
+
+                /*if (!t.Name.Contains("_base"))
                 {
                     result.Add(t.Name);
-                }
+                }*/
             }
 
             return result;
