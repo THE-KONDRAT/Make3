@@ -128,12 +128,15 @@ namespace DataContainers
             if (h2 == 0) h2 = 0.001;
             double colcoeff = h1 / h2;
 
-            Emgu.CV.Mat mat = Emgu.CV.Mat.Zeros(Width, Height, Emgu.CV.CvEnum.DepthType.Cv8U, 1);
+            Emgu.CV.Mat mat = Emgu.CV.Mat.Zeros(Width, Height, Emgu.CV.CvEnum.DepthType.Cv8U, 3);
             for(int x = 0; x < Width; x++)
             {
                 byte c = profile[x];
                 col = Convert.ToByte((((double)c - (double)minCol) * colcoeff) + GrayRangeLow);
-                MyLine(mat, new System.Drawing.Point(x, Height), new System.Drawing.Point(x, Height - col), col, col, col);
+                //MyLine(mat, new System.Drawing.Point(x, Height), new System.Drawing.Point(x, Height - col), 200, col, 50);
+                MyLine(mat, new System.Drawing.Point(x, Height), new System.Drawing.Point(x, Height - col), 255 - col / 2, col, col / 5);
+                MyLine(mat, new System.Drawing.Point(x, 0), new System.Drawing.Point(x, Height - col), 100, 15, 10);
+                MyLine(mat, new System.Drawing.Point(x, Height - col), new System.Drawing.Point(x, Height - col + 10), 255, 255, 250);
             }
 
             System.Windows.Controls.Image img = new System.Windows.Controls.Image();
