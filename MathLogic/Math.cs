@@ -364,5 +364,18 @@ namespace MathLogic
         }
         #endregion
         #endregion
+
+        public static double polinomBershtain(int i, int n, double t)// Polynom Bershtain
+        {
+            return (Factorial(n) / (Factorial(i) * Factorial(n - i))) * System.Math.Pow(t, i) * System.Math.Pow(1 - t, n - i);
+        }
+
+        public static int Factorial(int n) // Calk Factorial
+        {
+            int res = 1;
+            for (int i = 1; i <= n; i++)
+                res *= i;
+            return res;
+        }
     }
 }

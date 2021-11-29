@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -83,22 +84,64 @@ namespace DataContainers
             return Asymm;
         }
 
+        public byte foundMax(byte[] profile)
+        {
+            byte ret = 0;
+            for(int i = 0; i < 256; i++)
+            {
+                if (ret < profile[i]) ret = profile[i];
+            }
+            return ret;
+        }
+        public byte foundMin(byte[] profile)
+        {
+            byte ret = 255;
+            for (int i = 0; i < 256; i++)
+            {
+                if (ret > profile[i]) ret = profile[i];
+            }
+            return ret;
+        }
+
         public void CreateThumbnail()
         {
+            int Width = 256;
+            int Height = 256;
+            byte GrayRangeHigh = 255, GrayRangeLow = 50;
+
             int cnt = -1;
             if (KeyPoints != null)
             {
                 cnt = KeyPoints.Count(element => element != null);
             }
             if (cnt < 9) return;
-            Emgu.CV.Mat mat = Emgu.CV.Mat.Zeros(50, 165, Emgu.CV.CvEnum.DepthType.Cv8U, 1);
-            MyLine(mat, new System.Drawing.Point(0, 0), new System.Drawing.Point(25, 35));
+
+            var a = this.Name;
+
+            byte[] profile = ColorProfile.ColorProfile.KeyPointsToTraceProfile(KeyPoints);
+            byte minCol = foundMin(profile);
+            byte maxCol = foundMax(profile);
+            byte col;
+
+            double h1 = GrayRangeHigh - GrayRangeLow;
+            double h2 = maxCol - minCol;
+            if (h2 == 0) h2 = 0.001;
+            double colcoeff = h1 / h2;
+
+            Emgu.CV.Mat mat = Emgu.CV.Mat.Zeros(Width, Height, Emgu.CV.CvEnum.DepthType.Cv8U, 1);
+            for(int x = 0; x < Width; x++)
+            {
+                byte c = profile[x];
+                col = Convert.ToByte((((double)c - (double)minCol) * colcoeff) + GrayRangeLow);
+                MyLine(mat, new System.Drawing.Point(x, Height), new System.Drawing.Point(x, Height - col), col, col, col);
+            }
+
             System.Windows.Controls.Image img = new System.Windows.Controls.Image();
             img.Source = ImageProcessing.ImageProcessingUI.GetImageSourceFromMat(mat);
             this.Thumbnail= img;
         }
 
-        void MyLine(Emgu.CV.Mat img, System.Drawing.Point start, System.Drawing.Point end)
+        void MyLine(Emgu.CV.Mat img, System.Drawing.Point start, System.Drawing.Point end, int R, int G, int B)
         {
             int thickness = 2;
             Emgu.CV.CvEnum.LineType lineType = Emgu.CV.CvEnum.LineType.EightConnected;
@@ -106,8 +149,8 @@ namespace DataContainers
             Emgu.CV.CvInvoke.Line(img,
               start,
               end,
-              new Emgu.CV.Structure.MCvScalar(255),
-              //new Emgu.CV.Structure.MCvScalar(0, 0, 0),
+              //new Emgu.CV.Structure.MCvScalar(255),
+              new Emgu.CV.Structure.MCvScalar(R, G, B),
               thickness,
               lineType);
         }

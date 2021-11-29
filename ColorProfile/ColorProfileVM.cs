@@ -481,8 +481,9 @@ namespace ColorProfile
         private void SetTemplateToColorProfile()
         {
             if (Loading) return;
-            if (selectedTemplate != null)
+            if (SelectedTemplate != null)
             {
+                //почему?
                 if (ColorProfile != null)
                 {
                     int layerID = ColorProfile.LayerID;
@@ -492,15 +493,15 @@ namespace ColorProfile
                     cp.Name = selectedTemplate.Name;
                     cp.Template = true;
                     //if not template - false;
-                    cp.KeyPointsToTraceProfile(selectedTemplate.KeyPoints);
+                    cp.SetKeyPointsToTraceProfile(selectedTemplate.KeyPoints);
                     ColorProfile = cp;
                     //selectedTemplate.Thumbnail = crTh();
-                    if (selectedTemplate.Thumbnail == null)
-                    {
-                        SelectedTemplate.CreateThumbnail();
-                    }
-                    CpThumbnail = selectedTemplate.Thumbnail.Source;
                 }
+                if (SelectedTemplate.Thumbnail == null)
+                {
+                    SelectedTemplate.CreateThumbnail();
+                }
+                CpThumbnail = selectedTemplate.Thumbnail.Source;
             }
         }
 
