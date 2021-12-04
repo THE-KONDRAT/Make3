@@ -61,44 +61,14 @@ namespace ControlLibrary.Control_Parts
         public PathControl()
         {
             InitializeComponent();
-            //Path = "testPath";
-            //Directory = false;
         }
 
         public PathControl(bool directory)
         {
             InitializeComponent();
 
-            //Directory = directory;
+            InputPathMode = PathMode.Directory;
         }
-
-        /*private UI_Helper.RelayCommand openCommand;
-        public UI_Helper.RelayCommand OpenCommand
-        {
-            get
-            {
-                return openCommand ??
-                  (openCommand = new UI_Helper.RelayCommand(obj =>
-                  {
-                      OnOpenClicked?.Invoke(Directory);
-                  }
-                  ));
-            }
-        }*/
-
-        /*private UI_Helper.RelayCommand clearCommand;
-        public UI_Helper.RelayCommand ClearCommand
-        {
-            get
-            {
-                return clearCommand ??
-                  (clearCommand = new UI_Helper.RelayCommand(obj =>
-                  {
-                      OnClearClicked?.Invoke();
-                  }
-                  ));
-            }
-        }*/
 
         private void OnPropertyChanged(String property)
         {

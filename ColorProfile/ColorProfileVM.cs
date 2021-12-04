@@ -483,7 +483,7 @@ namespace ColorProfile
             if (Loading) return;
             if (SelectedTemplate != null)
             {
-                //почему?
+                //if color profile is null we can't get layer id 
                 if (ColorProfile != null)
                 {
                     int layerID = ColorProfile.LayerID;

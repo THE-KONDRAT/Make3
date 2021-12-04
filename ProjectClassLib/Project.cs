@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using DataContainers;
+using Newtonsoft.Json;
 
 namespace ProjectClassLib
 {
@@ -17,6 +18,33 @@ namespace ProjectClassLib
         #region Project params
         public string Name { get; set; }
         public UInt64 id { get; set; }
+
+        [XmlIgnoreAttribute()]
+        private string openedFilePath;
+        /*Path of the project file. Fills when project loads from file. If generated project path and this path becomes different
+        if means we should check new location and move project there
+        if this string is null or empty this means that the project was created but not saved
+         */
+        [JsonIgnore]
+        public string OpenedFilePath
+        {
+            get { return openedFilePath; }
+        }
+
+        //Flag that represents if project was changed and not saved
+
+        [XmlIgnoreAttribute()]
+        private bool projectSaved;
+        [JsonIgnore]
+        public bool ProjectSaved
+        {
+            get { return projectSaved; }
+            set
+            {
+                projectSaved = value;
+                //propertychanged
+            }
+        }
 
         [XmlIgnoreAttribute()]
         DateTime creationDate;
@@ -87,7 +115,7 @@ namespace ProjectClassLib
 
         #region User params
         /// <summary>
-        /// 
+        /// Project ppf file path
         /// </summary>
         public string FullPath { get; set; }
         public string ResultFullPath { get; set; }
@@ -144,6 +172,15 @@ namespace ProjectClassLib
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Sets file path from opened project file
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void SetFilePath(string filePath)
+        {
+            openedFilePath = filePath;
+        }
+
         public void SetCreationDate(DateTime d)
         {
             creationDate = d;
@@ -159,7 +196,36 @@ namespace ProjectClassLib
         public Project()
         {
             //layerSelected = -1;
+
         }
+        #endregion
+
+        #region Template
+        public static Project GetProjectTemplate()
+        {
+            ProjectClassLib.Project project = new ProjectClassLib.Project();
+            project.Name = "Test proj";
+
+            #region template
+            project.FrameResolution = new DataContainers.Resolution(1200, 820);
+            project.HologramDimension = new DataContainers.LinearDimension<decimal>(640, 1234.5m);
+            project.UnitSize = 6.25m;
+            project.GreyRange = new Ranges.GreyRange(20, 155);
+            //profileTemplate.
+            #endregion
+
+            return project;
+        }
+
+        /*
+        public override Layer GetLayerTemplate(string name)
+        {
+            return new Layer();
+        }*/
+        /*private void LoadTrekoByDefaultTemplate()
+        {
+            //this = (Treko)GetLayerTemplate();
+        }*/
         #endregion
 
         #region Destructors

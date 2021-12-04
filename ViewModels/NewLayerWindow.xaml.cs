@@ -202,6 +202,7 @@ namespace ViewModels
         private void LoadControlByLayer(Layers.Layer layer)
         {
             //Bindings
+            lpcProps.Empty = false;
             LayerProperteisControlOperations.BindLayerObjToPropertyControl(layer, lpcProps);
         }
 
@@ -211,7 +212,7 @@ namespace ViewModels
         }
 
         #region Buttons
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        private void btnApply_Click(object sender, RoutedEventArgs e)
         {
             bool success = (OnCreateLayer?.Invoke(layerObj)).GetValueOrDefault(false);
             if (success)

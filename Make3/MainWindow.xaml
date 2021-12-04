@@ -58,7 +58,14 @@
 
             <Menu VerticalAlignment="Center">
                 <MenuItem Header="Tools">
-                    <Label Content="Options"/>
+                    <MenuItem Header="Options" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                               Command="{Binding ElementName=this, Path=CallOptionsCommand}"/>
+                </MenuItem>
+            </Menu>
+            <Menu VerticalAlignment="Center">
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Edit current project" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                               Command="{Binding ElementName=this, Path=EditCurrentProjectCommand}"/>
                 </MenuItem>
             </Menu>
             <Separator/>

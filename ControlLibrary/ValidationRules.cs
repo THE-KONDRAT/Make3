@@ -56,9 +56,9 @@ namespace ControlLibrary.ValidationRules
                     }
                     else
                     {
-                        string projectDirectoryFullPath = FileOperations.FileStructure.GetProjectDirectoryFullPath((string)value, ProjectName.Value);
+                        string projectDirectory = FileOperations.FileStructure.GetProjectDirectory((string)value, ProjectName.Value);
                         //Check if directory already exists
-                        if (FileOperations.FileAccess.CheckDirectoryExists(projectDirectoryFullPath))
+                        if (FileOperations.FileAccess.CheckDirectoryExists(projectDirectory))
                         {
                             return new ValidationResult(false, message);
                         }
@@ -162,9 +162,9 @@ namespace ControlLibrary.ValidationRules
                     }
                     else
                     {
-                        string projectDirectoryFullPath = FileOperations.FileStructure.GetProjectDirectoryFullPath(ProjectPath.Value, (string)value);
+                        string projectDirectory = FileOperations.FileStructure.GetProjectDirectory(ProjectPath.Value, (string)value);
                         //Check if directory already exists
-                        if (FileOperations.FileAccess.CheckDirectoryExists(projectDirectoryFullPath))
+                        if (FileOperations.FileAccess.CheckDirectoryExists(projectDirectory))
                         {
                             return new ValidationResult(false, message);
                         }

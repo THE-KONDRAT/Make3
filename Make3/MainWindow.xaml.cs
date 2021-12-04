@@ -334,21 +334,6 @@ namespace Make3
             }
         }
 
-        private void btnNewProject_Click(object sender, RoutedEventArgs e)
-        {
-            ControlLibrary.ProjectControl pc = new ControlLibrary.ProjectControl();
-            ViewModels.NewProjectWindow pcw = new ViewModels.NewProjectWindow();
-            pcw.Height = 500;
-            pcw.Width = 400;
-            pcw.Owner = this;
-            pcw.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            //pcw.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            /*SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(48, 48, 48));
-            pcw.Background = brush;*/
-            //pcw.Content = pc;
-            pcw.ShowDialog();
-        }
-
         #region Layers
         // команда выхода из программы
         private UI_Helper.RelayCommand showPreviewCommand;
@@ -369,6 +354,48 @@ namespace Make3
                       {
                           this.Close();
                       }*/
+                  }
+                  ));
+            }
+        }
+        #endregion
+
+        #region Tools
+        // команда выхода из программы
+        private UI_Helper.RelayCommand callOptionsCommand;
+        public UI_Helper.RelayCommand CallOptionsCommand
+        {
+            get
+            {
+                return callOptionsCommand ??
+                  (callOptionsCommand = new UI_Helper.RelayCommand(obj =>
+                  {
+                      if (VM == null)
+                      {
+                          VM = new ViewModels.MainViewModel();
+                      }
+                      VM.CallOptions(this);
+                  }
+                  ));
+            }
+        }
+        #endregion
+
+        #region Edit
+        // команда выхода из программы
+        private UI_Helper.RelayCommand editCurrentProjectCommand;
+        public UI_Helper.RelayCommand EditCurrentProjectCommand
+        {
+            get
+            {
+                return editCurrentProjectCommand ??
+                  (editCurrentProjectCommand = new UI_Helper.RelayCommand(obj =>
+                  {
+                      if (VM == null)
+                      {
+                          VM = new ViewModels.MainViewModel();
+                      }
+                      VM.EditCurrentProject(this);
                   }
                   ));
             }

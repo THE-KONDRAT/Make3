@@ -1,0 +1,233 @@
+﻿<ResourceDictionary x:Name="LayersResourceDictionary"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controlParts="clr-namespace:ControlLibrary.Control_Parts">
+    <!--#region Layers-->
+    <DataTemplate x:Key="Treko">
+        <StackPanel>
+            <!--Layer name-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Layer name" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                       Margin="5"
+                       Background="#FF404040"
+                       TextAlignment="Left" TextWrapping="Wrap"
+                       FontSize="10" Foreground="White" 
+                       Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Separator/>
+            <!--Image Path-->
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Content="Image path" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+
+                <controlParts:PathControl Grid.Row="0" Grid.Column="1" Height="60"
+                                                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                                  InputPathMode="File"
+                                                  Path="{Binding Path=ImagePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  OpenCommand="{Binding ElementName=this, Path=OpenCommand}"
+                                                  ClearCommand="{Binding ElementName=this, Path=ClearCommand}"/>
+                <Label Grid.Row="1" Grid.Column="2"  
+                               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                               VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                               Content="Image size 200(180)x150(150) pix" Foreground="White" FontSize="10"/>
+            </Grid>
+            <Separator/>
+            <!--Angles Path-->
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Angles Path" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+
+                <controlParts:PathControl Grid.Column="1" Height="60"
+                                                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                                  InputPathMode="File"
+                                                  Path="{Binding Path=AnglesPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  OpenCommand="{Binding ElementName=this, Path=OpenCommand}"
+                                                  ClearCommand="{Binding ElementName=this, Path=ClearCommand}"/>
+            </Grid>
+            <Separator/>
+            <!--Step-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Step" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+
+                <controlParts:DimensionControl2 Grid.Column="1" Width="120" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 10, 10, 10"
+                                        Val="{Binding Path=Step, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ValBackColor="#FF303030" ValColor="White" ValFontSize="14" ValBorderColor="Gray"
+                                        PropertyUnit="um" PropertyUnitColor="Gray" PropertyUnitFontSize="9" />
+            </Grid>
+            <Separator/>
+            <!--Radius-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Radius" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <controlParts:DimensionControl Grid.Column="0" Width="90" Height="50" HorizontalAlignment="Stretch" Margin="5"
+                                        Val="{Binding Path=ArcRadius.X, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                        ValBackColor="#FF303030" ValColor="White" ValFontSize="14" ValBorderColor="Gray"
+                                        PropertyName="X" PropertyNameColor="Silver" PropertyNameFontSize="10"
+                                        PropertyUnit="um" PropertyUnitColor="Gray" PropertyUnitFontSize="9"
+                                        NumberType="Integer"/>
+
+                    <controlParts:DimensionControl Grid.Column="1" Width="90" Height="50" HorizontalAlignment="Stretch" Margin="5"
+                                        Val="{Binding Path=ArcRadius.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                        ValBackColor="#FF303030" ValColor="White" ValFontSize="14" ValBorderColor="Gray"
+                                        PropertyName="Y" PropertyNameColor="Silver" PropertyNameFontSize="10"
+                                        PropertyUnit="um" PropertyUnitColor="Gray" PropertyUnitFontSize="9"
+                                        NumberType="Fractional"
+                                        MinValue="-2.6" MaxValue="16.4" Step="0.2"/>
+                </Grid>
+            </Grid>
+            <Separator/>
+            <!--Color Profile-->
+            <!--<Grid Height="140">-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Color profile" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                           />
+
+                <Grid Grid.Column="1">
+
+                    <controlParts:ColorProfileControl_Mini MinHeight="140" HorizontalAlignment="Stretch" Margin="0" 
+                                                               DataContext="{Binding ElementName=this, Path=VM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </Grid>
+            <Separator/>
+            <!--Mask Path-->
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Mask path" FontSize="10" Foreground="White"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+
+                <controlParts:PathControl Grid.Column="1" Height="60"
+                                                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                                  InputPathMode="File"
+                                                  Path="{Binding Path=MaskPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  OpenCommand="{Binding ElementName=this, Path=OpenCommand}"
+                                                  ClearCommand="{Binding ElementName=this, Path=ClearCommand}"/>
+            </Grid>
+            <!--<Label Content="{Binding Path=Id, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Red"/>
+                <Label Content="{Binding Path=TechnologyName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Green"/>
+                <Label Content="{Binding Path=ProjectID, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Purple"/>
+                <Label Content="{Binding Path=AnglesPath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Yellow"/>-->
+        </StackPanel>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="Empty">
+        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <TextBlock Text="No layer selected" Foreground="Green" FontSize="16"/>
+        </Grid>
+    </DataTemplate>
+
+    <!--#endregion-->
+
+    <DataTemplate x:Key="LayerName">
+        <Grid Width="Auto" Height="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                   Content="Layer name" FontSize="10" Foreground="White"/>
+            <TextBox x:Name="txtProjectName" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                       Margin="5"
+                       Background="#FF404040"
+                       TextAlignment="Left" TextWrapping="Wrap"
+                       FontSize="10" Foreground="White" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SingleFilePath">
+        <Grid Width="Auto" Height="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                   Content="Layer name" FontSize="10" Foreground="White"/>
+            <Grid Grid.Column="1" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width=".3*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBox x:Name="txtProjectName" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                       Margin="5"
+                       Background="#FF404040"
+                       TextAlignment="Left" TextWrapping="Wrap"
+                       FontSize="10" Foreground="White" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Button x:Name="btnOpen" Grid.Row="0" Grid.Column="1"  
+                        Background="#FF404040" >
+                    <!--Click="btnOpen_Click"-->
+                    <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        TextAlignment="Center" TextWrapping="Wrap"
+                        FontSize="10" Foreground="White"
+                        Text="Open"/>
+                </Button>
+                <Button x:Name="btnClear" Grid.Row="1" Grid.Column="1"  
+                        Background="#FF404040" >
+                    <!--Click="btnClear_Click"-->
+                    <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        TextAlignment="Center" TextWrapping="Wrap"
+                        FontSize="10" Foreground="White"
+                        Text="Clear"/>
+                </Button>
+            </Grid>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

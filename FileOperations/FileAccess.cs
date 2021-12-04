@@ -24,7 +24,7 @@ namespace FileOperations
 
         public static bool CreateDirectory(string path)
         {
-            bool result = false;
+            bool result = true;
             try
             {
                 Directory.CreateDirectory(path);
@@ -57,6 +57,22 @@ namespace FileOperations
             return result;
         }
 
+        public static bool CopyFileToDirectory(string dirPath, string filePath)
+        {
+            bool result = false;
+            if (CheckDirectoryExists(dirPath) && CheckFileExists(filePath))
+            {
+                var b = dirPath;
+                var a = GetDirectoryPathWithSeparator(b);
+                string newFilePath = dirPath + GetFileName(filePath);
+
+                File.Copy(filePath, newFilePath);
+
+                result = true;
+            }
+            return result;
+        }
+
         /*public static bool ValidateFileName(string fileName)
         {
             bool result = false;
@@ -67,15 +83,43 @@ namespace FileOperations
             return result;
         }*/
 
-        public static string GetDirectoryPath(string path)
+        public static string GetFileName(string path)
+        {
+            string result = null;
+            if (CheckFileExists(path))
+            {
+                if (GetPathType(path) == PathType.File)
+                {
+                    result = Path.GetFileName(path);
+                }
+                else throw new Exception("Not file");
+            }
+
+            return result;
+        }
+
+        public static PathType GetPathType(string path)
         {
             FileAccess.PathType pathType = FileAccess.PathType.File;
+
             FileAttributes attr = File.GetAttributes(path);
             if (attr.HasFlag(FileAttributes.Directory))
             {
                 pathType = FileAccess.PathType.Directory;
             }
 
+            return pathType;
+        }
+
+        public static string GetDirectoryPath(string path)
+        {
+            FileAccess.PathType pathType = GetPathType(path);
+
+            return GetDirectoryPath(path, pathType);
+        }
+
+        public static string GetDirectoryPath(string path, PathType pathType)
+        {
             if (pathType.Equals(PathType.File))
             {
                 return Path.GetDirectoryName(path);

@@ -9,7 +9,9 @@
              d:DesignHeight="600" d:DesignWidth="300"
              x:Name="this">
     <UserControl.Resources>
-        <DataTemplate x:Key="dt">
+        <!--<ResourceDictionary x:Name="LayerTemplates" Source="\layer controls\layersresourcedictionary.xaml"/>-->
+
+        <DataTemplate x:Key="Treko">
             <StackPanel>
                 <!--Layer name-->
                 <Grid>
@@ -163,89 +165,118 @@
                 <Label Content="{Binding Path=AnglesPath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Yellow"/>-->
             </StackPanel>
         </DataTemplate>
-        
-    </UserControl.Resources>
-    <Grid Background="#FF2A2A2A">
-        <Grid.RowDefinitions>
-            <RowDefinition Height=".15*" MinHeight="78"/>
-            <RowDefinition Height=".003*" MinHeight="2"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width=".2*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <DataTemplate x:Key="Empty">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                    Text="Layer with such technology name did not found" Foreground="Green" FontSize="16"/>
+            </Grid>
+        </DataTemplate>
 
-            <Label x:Name="lblLayerName" Grid.Column="0" Grid.Row="0"
+        <local:UITemplateSelector x:Key="LayerUI_TS"/>
+        <local:LayerDataTemplateSelector x:Key="ts"/>
+
+        <DataTemplate x:Key="UIEmpty">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                    Text="No layer selected" Foreground="Red" FontSize="16"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="LayerUI">
+            <Grid Background="#FF2A2A2A">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".15*" MinHeight="78"/>
+                    <RowDefinition Height=".003*" MinHeight="2"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width=".2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label x:Name="lblLayerName" Grid.Column="0" Grid.Row="0"
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                <Label.Content>
-                    <TextBlock Text="{Binding Path=Name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="10" Foreground="White"/>
-                    <!--"{Binding ElementName=this, Path=LayerName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"-->
-                </Label.Content>
-            </Label>
+                        <Label.Content>
+                            <TextBlock Text="{Binding Path=Name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="10" Foreground="White"/>
+                            <!--"{Binding ElementName=this, Path=LayerName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"-->
+                        </Label.Content>
+                    </Label>
 
-            <Button x:Name="btnPreview" Grid.Row="1" Grid.Column="0"  
+                    <Button x:Name="btnPreview" Grid.Row="1" Grid.Column="0"  
                         Background="Green" Margin="10" 
                         Command="{Binding ElementName=this, Path=PreviewCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                         TextAlignment="Center" TextWrapping="Wrap"
                         FontSize="10" Foreground="White"
                         Text="Preview"/>
-            </Button>
+                    </Button>
 
-            <Grid Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height=".45*"/>
-                </Grid.RowDefinitions>
+                    <Grid Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height=".45*"/>
+                        </Grid.RowDefinitions>
 
-                <Image x:Name="imgMain" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        <Image x:Name="imgMain" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                        Source="{Binding Path=Thumbnail.ImageSourceValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--Source="{Binding ElementName=this, Path=LayerPreview, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"-->
-                
-                <Label Grid.Column="0" Grid.Row="1"
+                        <!--Source="{Binding ElementName=this, Path=LayerPreview, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"-->
+
+                        <Label Grid.Column="0" Grid.Row="1"
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                    Content="Image" FontSize="10" Foreground="White"/>
-            </Grid>
+                    </Grid>
 
-            <Grid Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height=".45*"/>
-                </Grid.RowDefinitions>
+                    <Grid Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height=".45*"/>
+                        </Grid.RowDefinitions>
 
-                <Image x:Name="imgMask" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        <Image x:Name="imgMask" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                        Source="{Binding Path=MaskThumbnail.ImageSourceValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--Source="{Binding ElementName=this, Path=LayerMask, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"-->
+                        <!--Source="{Binding ElementName=this, Path=LayerMask, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"-->
 
-                <Label Grid.Column="0" Grid.Row="1"
+                        <Label Grid.Column="0" Grid.Row="1"
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                    Content="Mask" FontSize="10" Foreground="White"/>
-            </Grid>
-        </Grid>
+                    </Grid>
+                </Grid>
 
-        <Viewbox Grid.Row="1" Height="Auto" Width="Auto" 
+                <Viewbox Grid.Row="1" Height="Auto" Width="Auto" 
                  Stretch="UniformToFill"
                  HorizontalAlignment="Stretch">
-            <Line Stroke="#FF802020" X1="0" X2="50" Y1="0" Y2="0" StrokeDashArray=".2, .2, .5"/>
-        </Viewbox>
+                    <Line Stroke="#FF802020" X1="0" X2="50" Y1="0" Y2="0" StrokeDashArray=".2, .2, .5"/>
+                </Viewbox>
 
-        <!--<ContentPresenter Grid.Row="1" Content="{Binding }" ContentTemplate="{StaticResource ResourceKey=dt}"/>-->
-        <ScrollViewer Grid.Row="2" >
-            <ContentPresenter Content="{Binding }" ContentTemplate="{StaticResource ResourceKey=dt}"/>
-        </ScrollViewer>
+                <!--<ContentPresenter Grid.Row="1" Content="{Binding }" ContentTemplate="{StaticResource ResourceKey=dt}"/>-->
+                <ScrollViewer Grid.Row="2" >
+                    <ContentPresenter x:Name="contentPresenter" Content="{Binding }" ContentTemplateSelector="{StaticResource ts}">
 
+                    </ContentPresenter>
+                </ScrollViewer>
+
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid Background="#FF2A2A2A">
+        <ContentPresenter x:Name="layerUIcontentPresenter" Content="{Binding }" ContentTemplateSelector="{StaticResource LayerUI_TS}">
+
+        </ContentPresenter>
     </Grid>
+    
+    
 </UserControl>

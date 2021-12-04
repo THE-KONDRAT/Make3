@@ -19,15 +19,23 @@ namespace ViewModels
                     {
                         control.VM = new ColorProfile.ColorProfileVM();
                     }
-                    System.Windows.Data.BindingOperations.ClearBinding(control.VM, ColorProfile.ColorProfileVM.ColorProfileProperty);
-                    System.Windows.Data.BindingOperations.ClearBinding(control.VM, ColorProfile.ColorProfileVM.ArcWidthProperty);
+                    /*System.Windows.Data.BindingOperations.ClearBinding(control.VM, ColorProfile.ColorProfileVM.ColorProfileProperty);
+                    System.Windows.Data.BindingOperations.ClearBinding(control.VM, ColorProfile.ColorProfileVM.ArcWidthProperty);*/
+                    ClearBindingsLayerPropertyControl(control);
                     control.VM.LoadByColorProfile(layer.ColorProfile);
                     UI_Helper.Binding.SetTwoWayBinding(layer, nameof(layer.ColorProfile), control.VM, ColorProfile.ColorProfileVM.ColorProfileProperty);
                     UI_Helper.Binding.SetTwoWayBinding(layer.ColorProfile, nameof(layer.ColorProfile.ArcWidth), control.VM, ColorProfile.ColorProfileVM.ArcWidthProperty);
-                    
                 }
             }
             
+        }
+
+        public static void ClearBindingsLayerPropertyControl(ControlLibrary.LayerPropertiesControl control)
+        {
+            if (control == null) return;
+            if (control.VM == null) return;
+            System.Windows.Data.BindingOperations.ClearBinding(control.VM, ColorProfile.ColorProfileVM.ColorProfileProperty);
+            System.Windows.Data.BindingOperations.ClearBinding(control.VM, ColorProfile.ColorProfileVM.ArcWidthProperty);
         }
 
     }

@@ -87,13 +87,13 @@
                 <ColumnDefinition Width=".6*"/>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="btnSave" Grid.Column="0"
+            <Button x:Name="btnApply" Grid.Column="0"
                         Margin="5"
-                        Background="Green" Click="btnSave_Click">
+                        Background="Green" Click="btnApply_Click">
                 <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                         TextAlignment="Center" TextWrapping="Wrap"
                         FontSize="10" Foreground="White"
-                        Text="Save"/>
+                        Text="Apply"/>
             </Button>
 
             <Button x:Name="btnCancel" Grid.Column="5"

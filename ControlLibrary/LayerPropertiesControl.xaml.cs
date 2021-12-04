@@ -24,6 +24,16 @@ namespace ControlLibrary
                 OnPropertyChanged("VM");
             }
         }
+        private bool empty;
+        public bool Empty
+        {
+            get { return empty; }
+            set
+            {
+                empty = value;
+                OnPropertyChanged("Empty");
+            }
+        }
         /*
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register(
@@ -147,5 +157,112 @@ namespace ControlLibrary
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
             }
         }
+    }
+
+    public class LayerDataTemplateSelector : DataTemplateSelector
+    {
+        public ResourceDictionary resourceDictionary { get; set; }
+        
+        public override DataTemplate
+            SelectTemplate(object item, DependencyObject container)
+        {
+            FrameworkElement element = container as FrameworkElement;
+            DataTemplate dt = element.FindResource("Empty") as DataTemplate;
+            if (element != null)
+            {
+                if (item != null)
+                {
+                    var n = item.GetType().Name;
+
+                    try
+                    {
+                        dt = element.FindResource(item.GetType().Name) as DataTemplate;
+
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                }
+                return dt;
+                
+                    
+            }
+            return null;
+            resourceDictionary = new ResourceDictionary();
+            /*string a = "../ControlLibrary;component/Layer Controls/SharedResourceDictionary.xaml";
+            Uri rel = new Uri(a, UriKind.RelativeOrAbsolute);
+            var a = 
+            resourceDictionary.Source = new Uri(rel.AbsoluteUri, UriKind.RelativeOrAbsolute);*/
+
+            /*Uri abs = new Uri(@"E:\Make3\ControlLibrary\Layer Controls\LayersResourceDictionary.xaml", UriKind.RelativeOrAbsolute);
+
+            DataTemplate dt = null;
+            if (item == null)
+            {
+                dt = (DataTemplate)resourceDictionary["Empty"];
+            }
+            else
+            {
+                dt = (DataTemplate)resourceDictionary[item.GetType().Name];
+            }
+
+            if (resourceDictionary != null)
+            {
+                 return dt;
+            }
+            else
+            {
+                return null;
+            }*/
+
+        }
+
+    }
+
+    public class UITemplateSelector : DataTemplateSelector
+    {
+        public ResourceDictionary resourceDictionary { get; set; }
+
+        public override DataTemplate
+            SelectTemplate(object item, DependencyObject container)
+        {
+            FrameworkElement element = container as FrameworkElement;
+            DataTemplate dt = element.FindResource("UIEmpty") as DataTemplate;
+            if (element != null)
+            {
+                if (item != null)
+                {
+                    //This property exists only in Layer-based classes
+                    System.Reflection.PropertyInfo tn = item.GetType().GetProperty("TechnologyName");
+                    try
+                    {
+
+                        if (tn != null)
+                        {
+                            dt = element.FindResource("LayerUI") as DataTemplate;
+                        }
+                        //If we want to exclude "Empty" DataTemplate
+                        /*var layerTemplate = element.FindResource(item.GetType().Name) as DataTemplate;
+                        if (layerTemplate != null)
+                        {
+                            dt = element.FindResource("LayerUI") as DataTemplate;
+                        }*/
+
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                }
+                return dt;
+
+
+            }
+            return null;
+            resourceDictionary = new ResourceDictionary();
+
+        }
+
     }
 }

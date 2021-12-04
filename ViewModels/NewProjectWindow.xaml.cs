@@ -26,13 +26,17 @@ namespace ViewModels
         ProjectClassLib.Project projectObj;
 
         #region Events
-        public delegate bool SaveProject(ProjectClassLib.Project project);
+        public delegate bool ApplyProject(ProjectClassLib.Project project);
+        public event ApplyProject OnApplyProject;
+
+        public delegate bool SaveProject(ProjectClassLib.Project project, bool createNew);
         public event SaveProject OnSaveProject;
 
         public delegate bool DeleteProject(ulong id);
         public event DeleteProject OnDeleteProject;
         #endregion
 
+        private bool editMode = false;
         #region Project properties
         /*public static readonly DependencyProperty HologramWidthDP = DependencyProperty.Register(
             "HologramWidth", typeof(string), typeof(NewProjectWindow));
@@ -63,16 +67,34 @@ namespace ViewModels
             }
         }
 
-        private string projectPath;
-        public string ProjectPath
+        private string projectFolder;
+        public string ProjectFolder
         {
-            get { return projectObj == null ? null : projectObj.FullPath; }
+            get
+            {
+                if (projectObj != null)
+                {
+                    string projDir = null;
+                    if (!string.IsNullOrWhiteSpace(projectObj.FullPath))
+                    {
+                        //projDir = FileOperations.FileAccess.GetDirectoryPathWithSeparator(projectObj.FullPath);
+                        //projDir = FileOperations.FileStructure.GetProjectDirectory(projectObj.FullPath);
+                        projDir = FileOperations.FileStructure.GetProjectDirectoryNotNamed(projectObj.FullPath);
+                        if (!projectFolder.Equals(projDir))
+                        {
+                            projectFolder = projDir;
+                        }
+                    }
+                }
+                
+                return projectFolder;
+            }
             set
             {
-                //ValidateName();
-                projectPath = projectObj == null ? null : value;
-                if (projectObj != null) projectObj.FullPath = projectPath;
-                OnPropertyChanged("ProjectPath");
+                //projectFolder = projectObj == null ? null : value;
+                projectFolder = value;
+                /*if (projectObj != null) projectObj.FullPath = projectPath;*/
+                OnPropertyChanged("ProjectFolder");
             }
         }
 
@@ -253,58 +275,58 @@ namespace ViewModels
         {
             InitializeComponent();
             DataContext = this;
+            //testFunc();
+        }
+
+        public NewProjectWindow(bool editProject)
+        {
+            editMode = editProject;
+            InitializeComponent();
+            DataContext = this;
+            //testFunc();
+        }
+
+        private void testFunc()
+        {
             txtMaskMultiplication.Text = ProjectClassLib.Project.ResolutionMultiplicationSymbol;
             txtMaskUnit.Text = ProjectClassLib.Project.ResolutionUnit;
-            ProjectClassLib.Project project = new ProjectClassLib.Project();
-            dc1.NumberType = DataTypes.NumberType.Integer;
-            dc2.NumberType = DataTypes.NumberType.Fractional;
-            project.Name = "Test proj";
-            project.FullPath = "E:\\";
-            project.HologramDimension = new DataContainers.LinearDimension<decimal>(640, 1234.5m);
-            project.UnitSize = 6.25m;
-            project.GreyRange = new Ranges.GreyRange(20, 155);
+            /*dc1.NumberType = DataTypes.NumberType.Integer;
+            dc2.NumberType = DataTypes.NumberType.Fractional;*/
+            ProjectFolder = "E:\\";
 
-            Binding b = new Binding();
-            b.Source = this;
-            b.Path = new PropertyPath("ProjectName");
-            b.Mode = BindingMode.OneWay;
-            b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //BindingOperations.SetBinding(txtProjectPath, txtProjectPath.Text, b);
-            if (project != null)
-            {
-                LoadControlByProject(project);
-            }
-            //OnPropertyChanged("UnitSize");
-            //maskWidth = "4800";
-            //maskHeight = "2387";
-            Binding b1 = new Binding();
-            b1.Source = this;
-            b1.Path = new PropertyPath("HologramWidth");
-            b1.Mode = BindingMode.TwoWay;
-            b1.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //BindingOperations.SetBinding(dc1, dc1.Val, b1);
+            //UI_Helper.Binding.SetOneWayBinding(this, nameof(this.projectName), txtProjectPath, TextBox.TextProperty);
+            
         }
 
         public void LoadProjectTemplate()
         {
             ProjectClassLib.Project newProject = new ProjectClassLib.Project();
+            newProject = ProjectClassLib.Project.GetProjectTemplate();
+            newProject.ProjectSaved = false;
             LoadControlByProject(newProject);
+            testFunc();
+            projectObj.ProjectSaved = false;
         }
 
         public void LoadControlByProject(ProjectClassLib.Project project)
         {
-
-
             projectObj = project;
 
             ProjectName = project.Name;
-            ProjectPath = project.FullPath;
+
+            //ProjectPath = project.FullPath;
+            if (!string.IsNullOrWhiteSpace(project.FullPath))
+            {
+                ProjectFolder = FileOperations.FileAccess.GetDirectoryPathWithSeparator(projectObj.FullPath);
+            }
+
+            UpdateProjectFullPath();
 
             hologramWidth = projectObj.HologramDimension == null ? -1 : projectObj.HologramDimension.Width;
             hologramHeight = projectObj.HologramDimension == null ? -1 : projectObj.HologramDimension.Height;
 
             decimal frameWidth = projectObj.FrameDimension == null ? -1 : projectObj.FrameDimension.Width;
-            decimal frameResX = projectObj.FrameDimension == null ? -1 : (decimal)projectObj.FrameResolution.X;
+            decimal frameResX = projectObj.FrameResolution == null ? -1 : (decimal)projectObj.FrameResolution.X;
             decimal frameHeight = projectObj.FrameDimension == null ? -1 : projectObj.FrameDimension.Height;
             decimal frameRexY = projectObj.FrameResolution == null ? -1 : (decimal)projectObj.FrameResolution.Y;
             unitSize = projectObj.UnitSize;
@@ -320,13 +342,27 @@ namespace ViewModels
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
+
+                if (property.Equals("ProjectFullPath") && projectObj != null)
+                {
+                    projectObj.FullPath = ProjectFullPath;
+                }
             }
         }
 
+        private void btnApply_Click(object sender, RoutedEventArgs e)
+        {
+            bool success = (OnApplyProject?.Invoke(projectObj)).GetValueOrDefault(false);
+            if (success)
+            {
+                this.Close();
+            }
+
+        }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            bool success = (OnSaveProject?.Invoke(projectObj)).GetValueOrDefault(false);
+            bool success = (OnSaveProject?.Invoke(projectObj, !editMode)).GetValueOrDefault(false);
             if (success)
             {
                 this.Close();
@@ -357,7 +393,7 @@ namespace ViewModels
                 ControlLibrary.DialogService.FileDialogService FDS = new ControlLibrary.DialogService.FileDialogService();
                 if (FDS.OpenFileDialog())
                 {
-                    ProjectPath = FDS.FilePath;
+                    ProjectFolder = FDS.FilePath;
                 }
             }
         }
@@ -366,7 +402,7 @@ namespace ViewModels
         {
             if (projectObj != null)
             {
-                ProjectPath = null;
+                ProjectFolder = null;
                 /*projectObj.FullPath = null;
                 //OnPropertyChanged("ProjectPath");*/
             }
@@ -390,6 +426,25 @@ namespace ViewModels
             //tb.
         }
 
+        private void UpdateProjectFullPath()
+        {
+            if (projectObj != null)
+            {
+                if (string.IsNullOrWhiteSpace(projectObj.FullPath) && !string.IsNullOrWhiteSpace(projectFolder))
+                {
+                    projectObj.FullPath = FileOperations.FileStructure.GetProjectFullPath(projectFolder, projectObj.Name);
+                }
+
+                if (!string.IsNullOrWhiteSpace(ProjectFullPath))
+                {
+                    if (!projectObj.FullPath.Equals(ProjectFullPath))
+                    {
+                        projectObj.FullPath = ProjectFullPath;
+                    }
+                }
+            }
+            
+        }
 
         /*
         // команда открытия файла

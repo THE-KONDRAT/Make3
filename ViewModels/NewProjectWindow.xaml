@@ -40,7 +40,7 @@
                        FontSize="10" Foreground="White" TextChanged="txtProjectName_TextChanged">
                 <!--Works only when proxy binding has Mode=TwoWay and text binding też ma to samo znaczenie-->
                 <TextBox.Resources>
-                    <validR:BindingProxy x:Key="nameProxy" Data="{Binding ElementName=this, Path=ProjectPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <validR:BindingProxy x:Key="nameProxy" Data="{Binding ElementName=this, Path=ProjectFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </TextBox.Resources>
                 <TextBox.Text >
                     <Binding Path="ProjectName" Mode="TwoWay">
@@ -81,7 +81,7 @@
                         <validR:BindingProxy x:Key="nameProxy" Data="{Binding ElementName=this, Path=ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </TextBox.Resources>
                     <TextBox.Text >
-                        <Binding Path="ProjectPath" Mode="TwoWay">
+                        <Binding Path="ProjectFolder" Mode="TwoWay">
                             <Binding.ValidationRules>
                                 <validR:ProjectPathRule>
                                     <validR:ProjectPathRule.ProjectName>
@@ -385,13 +385,13 @@
                 <ColumnDefinition Width=".6*"/>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="btnSave" Grid.Column="0"
+            <Button x:Name="btnApply" Grid.Column="0"
                         Margin="5"
-                        Background="Green" Click="btnSave_Click">
+                        Background="Green" Click="btnApply_Click">
                 <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                         TextAlignment="Center" TextWrapping="Wrap"
                         FontSize="10" Foreground="White"
-                        Text="Save"/>
+                        Text="Apply"/>
             </Button>
 
             <Button x:Name="btnDelete" Grid.Column="2"  

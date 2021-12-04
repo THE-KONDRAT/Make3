@@ -62,21 +62,36 @@ namespace ProjectClassLib
 
         #region Load/Save Project
         #region Save
-        public static void SaveProject(ProjectClassLib.Project project, string filePath, bool newProjectDirectory)
+        public static void SaveProject(ProjectClassLib.Project project, string filePath, bool createDirs)
         {
             //check path
 
             //Create folders
-            if (!CheckProjectFolders(project, newProjectDirectory))
+            bool folders = CheckProjectFolders(project, createDirs);
+            if (!folders)
             {
-                return;
+                if (!createDirs)
+                {
+                    return;
+                }
             }
+            /*else
+            {
+                
+            }*/
 
             //Save project file
             FileOperations.SavindLoading.SaveJSON(project, filePath);
 
             //Save layers
-
+            if (project.Layers != null)
+            {
+                foreach (Layers.Layer l in project.Layers)
+                {
+                    var lDir = FileOperations.FileStructure.GetLayerFolder(project.FullPath, l.RelativePath);
+                    l.SaveLayerData(l.GetType(), lDir);
+                }
+            }
         }
         #endregion
 
@@ -87,6 +102,11 @@ namespace ProjectClassLib
             if (FileOperations.FileAccess.CheckFileExists(filePath))
             {
                 project = FileOperations.SavindLoading.LoadJSON<ProjectClassLib.Project>(filePath);
+
+                Dictionary<string, object>  dic = FileOperations.SavindLoading.LoadJSON<Dictionary<string, object>>(filePath);
+                DateTime creationDate = (DateTime)dic["CreationDate"];
+                project.SetCreationDate(creationDate);
+                project.SetFilePath(filePath);
             }
 
             //Load layer objects
@@ -97,7 +117,7 @@ namespace ProjectClassLib
         #endregion
 
         #region Directory operations
-        private static bool CheckProjectFolders(ProjectClassLib.Project project, bool newProjectDirectory)
+        private static bool CheckProjectFolders(ProjectClassLib.Project project, bool createDirs)
         {
             bool success = true;
 
@@ -107,27 +127,35 @@ namespace ProjectClassLib
             }
 
             //Project folder
-            if (newProjectDirectory)
+            string projDir = FileOperations.FileAccess.GetDirectoryPath(project.FullPath, FileOperations.FileAccess.PathType.File);
+
+            if (!FileOperations.FileAccess.CheckDirectoryExists(projDir))
             {
-                string projDir = FileOperations.FileAccess.GetDirectoryPath(project.FullPath);
-
-                if (!FileOperations.FileAccess.CheckDirectoryExists(projDir))
+                if (!createDirs)
                 {
-                    return success = false;
+                    success = false;
+                    throw new Exception("Can't create project directory");
                 }
-
-                if (!FileOperations.FileAccess.CheckDirectoryExists(projDir))
+                else
                 {
                     success = FileOperations.FileAccess.CreateDirectory(projDir);
                 }
             }
 
             //Layers folder
-            if (FileOperations.FileStructure.GetLayersFolder(project.FullPath) != null)
+            if (FileOperations.FileStructure.GetLayersFolder(project.FullPath, FileOperations.FileAccess.PathType.File) != null)
             {
-                if (!FileOperations.FileAccess.CheckDirectoryExists(FileOperations.FileStructure.GetLayersFolder(project.FullPath)))
+                if (!FileOperations.FileAccess.CheckDirectoryExists(FileOperations.FileStructure.GetLayersFolder(project.FullPath, FileOperations.FileAccess.PathType.File)))
                 {
-                    success = FileOperations.FileAccess.CreateDirectory(FileOperations.FileStructure.GetLayersFolder(project.FullPath));
+                    if (!createDirs)
+                    {
+                        success = false;
+                        throw new Exception("Can't create layers directory");
+                    }
+                    else
+                    {
+                        success = FileOperations.FileAccess.CreateDirectory(FileOperations.FileStructure.GetLayersFolder(project.FullPath, FileOperations.FileAccess.PathType.File));
+                    }
                 }
             }
 

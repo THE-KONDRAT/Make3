@@ -19,8 +19,4 @@
     <ProjectReference Include="..\UI_Helper\UI_Helper.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Layer Controls\" />
-  </ItemGroup>
-
 </Project>

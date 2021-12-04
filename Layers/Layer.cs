@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -123,6 +124,8 @@ namespace Layers
         #endregion
 
         #region User params
+        private bool imageNeedSave = false;
+
 
         [XmlIgnoreAttribute]
         private string imagePath;
@@ -139,6 +142,7 @@ namespace Layers
         [XmlIgnoreAttribute]
         private Emgu.CV.Mat image;
         [XmlIgnoreAttribute]
+        [JsonIgnore]
         public virtual Emgu.CV.Mat Image
         {
             get { return image; }
@@ -161,12 +165,23 @@ namespace Layers
         }
 
 
-
-        public string MaskPath { get; set; }
+        private bool maskNeedSave = false;
+        [XmlIgnoreAttribute]
+        private string maskPath;
+        public string MaskPath
+        {
+            get { return maskPath; }
+            set
+            {
+                maskPath = value;
+                OnPropertyChanged("MaskPath");
+            }
+        }
 
         [XmlIgnoreAttribute]
         private Emgu.CV.Mat mask;
         [XmlIgnoreAttribute]
+        [JsonIgnore]
         public Emgu.CV.Mat Mask
         {
             get { return mask; }
@@ -327,7 +342,19 @@ namespace Layers
 
             return result;
         }
+        #endregion
 
+
+
+        #region Destructors
+        ~Layer()
+        {
+
+        }
+        #endregion
+
+
+        #region Logic
         public static Regex RegexBaseLayers = new Regex("(_base)$");
         public static Regex RegexDigitStartLayers = new Regex("^Layer(\\d+.*)");
         public static Regex RegexDigitStartTechnologyName = new Regex("^(\\d+.*)");
@@ -403,7 +430,7 @@ namespace Layers
             try
             {
                 //var a = techName;
-                result = typeof(Layers.Layer).Assembly.GetTypes().Single(x => x.IsSubclassOf(typeof(Layers.Layer)) && x.Name.Equals(l_tName));                
+                result = typeof(Layers.Layer).Assembly.GetTypes().Single(x => x.IsSubclassOf(typeof(Layers.Layer)) && x.Name.Equals(l_tName));
             }
             catch (Exception e)
             {
@@ -434,14 +461,28 @@ namespace Layers
             }
             return layer;
         }
-        #endregion
 
-        #region Destructors
-        ~Layer()
+        public virtual void SaveLayerData(Type objectType, string layerDir)
         {
+            if (!IsLayer(objectType))
+            {
+                throw new Exception("Object type is base layer");
+            }
 
+            if (imageNeedSave)
+            {
+                //copy file
+                FileOperations.FileAccess.CopyFileToDirectory(layerDir, imagePath);
+            }
+
+            if (maskNeedSave)
+            {
+                //copy file
+                FileOperations.FileAccess.CopyFileToDirectory(layerDir, maskPath);
+            }
         }
         #endregion
+
 
         internal void OnPropertyChanged(String property)
         {

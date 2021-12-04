@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using static FileOperations.FileAccess;
 
 namespace FileOperations
 {
@@ -148,7 +149,35 @@ namespace FileOperations
         #endregion
 
         #region Project
-        public static string GetProjectDirectoryFullPath(string projectDirectory, string projectName)
+        public static string GetProjectDirectoryNotNamed(string projectFullPath)
+        {
+            string result = null;
+            if (!string.IsNullOrWhiteSpace(projectFullPath))
+            {
+                string name = Path.GetFileNameWithoutExtension(projectFullPath);
+                string dir = GetProjectDirectory(projectFullPath);
+                string[] fArray = dir.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+                if (fArray[fArray.Length - 1].Equals((name)))
+                {
+                    fArray[fArray.Length - 1] = null;
+                    dir = string.Join(Path.DirectorySeparatorChar, fArray);
+                }
+                result = dir.Trim();
+            }
+            return result;
+        }
+
+        public static string GetProjectDirectory(string projectFullPath)
+        {
+            string result = null;
+            if (!string.IsNullOrWhiteSpace(projectFullPath))
+            {
+                result = FileAccess.GetDirectoryPathWithSeparator(Path.GetDirectoryName(projectFullPath));
+            }
+            return result;
+        }
+
+        public static string GetProjectDirectory(string projectDirectory, string projectName)
         {
             string result = null;
             if (!string.IsNullOrWhiteSpace(projectDirectory) && !string.IsNullOrWhiteSpace(projectName))
@@ -160,7 +189,7 @@ namespace FileOperations
 
         public static string GetProjectFullPath(string projectDirectory, string projectName)
         {
-            string result = GetProjectDirectoryFullPath(projectDirectory, projectName);
+            string result = GetProjectDirectory(projectDirectory, projectName);
             if (!string.IsNullOrWhiteSpace(result))
             {
                 result += projectName + $".{eProject}";
@@ -170,11 +199,24 @@ namespace FileOperations
 
         public static string GetLayersFolder(string projectFullPath)
         {
-            string projectFolder = FileAccess.GetDirectoryPath(projectFullPath);
+            PathType pathType = FileAccess.GetPathType(projectFullPath);
+
+            return GetLayersFolder(projectFullPath, pathType);
+        }
+
+        public static string GetLayersFolder(string projectFullPath, PathType pathType)
+        {
+            string projectFolder = FileAccess.GetDirectoryPath(projectFullPath, pathType);
 
             return $"{projectFolder}{Path.DirectorySeparatorChar}" + dProjectLayers + Path.DirectorySeparatorChar;
         }
 
+        public static string GetLayerFolder(string projectFullPath, string layerRelativePath)
+        {
+            string layersFolder = GetLayersFolder(projectFullPath);
+
+            return layersFolder + layerRelativePath + Path.DirectorySeparatorChar;
+        }
         #endregion
     }
 }
